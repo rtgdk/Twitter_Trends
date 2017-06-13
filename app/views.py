@@ -67,7 +67,7 @@ def top_trends_fetch(woeid):
     ul = []
     count = 0
     for trend in dict_trends:
-        if count > 100:
+        if count > 4:
             break
         if (ul.count(trend['Hashtag'])==0):
             ul.append(trend['Hashtag'])
@@ -155,11 +155,12 @@ def tweet_fetch(request,woeid, hashtag, count):
     return HttpResponse(b,e,f)
 
 def fetch_top_risers():
+	a=[]
+	return a
 	dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
 	db_trends = dbclient['Twitter_Trends']
 	db_coll = db_trends.Trends_Place
 	hashtags = db_coll.find({}).distinct("Hashtag")
-	a=[]
 	for tag in hashtags:
 		dict_top = list(db_coll.find({"Hashtag": tag}).sort([("_id", -1)]))
 		length = len(dict_top)
