@@ -116,7 +116,7 @@ def tweet_fetch(request,woeid, hashtag, count):
     hash_dict = db_coll_trends.find({"Hashtag": hashtag})
     if hash_dict.count() == 0:
         hashtag = "#" + hashtag
-    print hashtag +"------------------------------"
+    #print hashtag +"------------------------------"
     consumer_key6 = '495MzSHQ36Ds9NttT8glVvK79'
     consumer_secret6 = 'cRjX3CITBOtsEqKn2jgj3DBLK8MBgANfdFvNex57PeMlHUMZCY'
     access_token6 = '870132122421403652-Ahmy6auwb8Qzrh8PvXP5E6ZLvEJZQcQ'
@@ -130,18 +130,18 @@ def tweet_fetch(request,woeid, hashtag, count):
     a = []
     c= []
     d= []
-    print woeid, hashtag
+    #print woeid, hashtag
     dict_time = db_coll_trends.find({"Name": woeid, "Hashtag": hashtag})
-    print dict_time
+    #print dict_time
     for i in dict_time:
         timestamp = i['Timestamp']
         c.append(timestamp[11:16])
         d.append(i['Tweet_Volume'])
     print ("Hey ")
-    print c
-    print d
+    #print c
+    #print d
     for i in search2['statuses']:
-        print i['text']
+        #print i['text']
         a.append(i["text"])
     # print ''
     response = {}
@@ -149,9 +149,9 @@ def tweet_fetch(request,woeid, hashtag, count):
     response["timestamp"] = c
     response["tweetvol"] = d
     b = json.dumps(response)
-    print b
+    #print b
     return HttpResponse(b)
-    print b
+    #print b
     return HttpResponse(b,e,f)
 
 def fetch_top_risers():
