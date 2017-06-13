@@ -93,7 +93,7 @@ def top_trends_fetch(woeid):
             dict_top3.update({"ri": trend['Tweet_Volume']})
             a.append(dict_top3)
         elif (ul.count(trend['Hashtag'])==1):
-        		upd_tr = filter(lambda tw: tw['name'] == trend['Hashtag'], a)[0]
+        		upd_tr = filter(lambda tw: tw['name'] == str(trend['Hashtag']), a)[0]
         		ul.append(trend['Hashtag'])
         		a.remove(upd_tr)
         		final = upd_tr["ri"]
