@@ -1,0 +1,8 @@
+django==1.5
+pillow
+gunicorn==19.4.5
+psycopg2==2.6.1
+whitenoise==2.0.6
+git+https://github.com/django-nonrel/django@nonrel-1.5
+djangotoolbox
+mongodb-engine

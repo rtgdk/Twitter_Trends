@@ -2,6 +2,8 @@
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 APP_DIR = os.path.join(BASE_DIR,'app')
+TEMPLATE_DIR = os.path.join(APP_DIR, 'templates')
+STATIC_PATH = os.path.join(APP_DIR,'static')
 
 STATIC_PATH = os.path.join(APP_DIR,'static')
 DEBUG = True
@@ -161,3 +163,23 @@ LOGGING = {
         },
     }
 }
+STATIC_URL = '/static/'
+
+
+STATICFILES_DIRS = (
+ 
+	STATIC_PATH,
+)
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+MEDIA_ROOT = os.path.join(APP_DIR,'media')
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+#MEDIA_URL = '/media/'
+
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
+LOGIN_URL = '/app/'
