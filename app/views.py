@@ -53,7 +53,7 @@ def index(request):
 # woeid = "India"
 def top_trends_fetch(woeid):
     a=[]
-    return a
+    #return a
     dbclient = MongoClient("mongodb://admin:admin@54.172.143.59:27017")
     db_trends = dbclient['Twitter_Trends']
     db_coll_trends = db_trends.Trends_Place
