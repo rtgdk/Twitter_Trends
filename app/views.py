@@ -67,7 +67,7 @@ def top_trends_fetch(woeid):
     ul = []
     count = 0
     for trend in dict_trends:
-        if count > 4:
+        if count > 100:
             break
         if (ul.count(trend['Hashtag'])==0):
             ul.append(trend['Hashtag'])
