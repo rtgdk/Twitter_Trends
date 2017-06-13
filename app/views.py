@@ -75,7 +75,7 @@ def top_trends_fetch(woeid):
     ul = []
     count = 0
     for trend in dict_trends:
-        if count > 1:
+        if count > 100:
             break
         if (trend['Hashtag'] not in ul):
             print "here2hash"
