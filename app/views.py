@@ -8,7 +8,6 @@ from django.template import RequestContext
 from pymongo import MongoClient
 import tweepy
 from twython import Twython
-from pymongo import MongoClient
 import math
 import datetime
 
