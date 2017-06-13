@@ -8,6 +8,7 @@ from django.template import RequestContext
 from pymongo import MongoClient
 import tweepy
 from twython import Twython
+from pymongo import MongoClient
 import math
 import datetime
 
@@ -59,6 +60,8 @@ def index(request):
 # woeid = "India"
 def top_trends_fetch(woeid):
     print "here2"
+    a=[]
+    return a
     dbclient = MongoClient("mongodb://admin:admin@54.172.143.59:27017")
     print "here2"
     db_trends = dbclient['Twitter_Trends']
@@ -75,7 +78,7 @@ def top_trends_fetch(woeid):
     ul = []
     count = 0
     for trend in dict_trends:
-        if count > 100:
+        if count > 1:
             break
         if (trend['Hashtag'] not in ul):
             print "here2hash"
@@ -174,35 +177,48 @@ def tweet_fetch(request,woeid, hashtag, count):
     return HttpResponse(b,e,f)
 
 def fetch_top_risers():
-    print "here3"
-    dbclient = MongoClient("mongodb://admin:admin@54.172.143.59:27017")
-    print "here3"
-    db_trends = dbclient['Twitter_Trends']
-    db_coll_trends = db_trends.Trends_Place
-    a=[]
-    return a
-    dict_top_risers = db_coll_trends.find({}).sort([("Rate_Increase", -1)])
-    fetched = []
-    a=[]
-    count = 0
-    for i in dict_top_risers:
-        if (count > 1):
-            break
-        if i['Hashtag'] not in fetched:
-            dict_top3 = {}
-            fetched.append(i['Hashtag'])
-            print i['Hashtag'], i['Rate_Increase']
-            dict_top3.update({"name": i['Hashtag'].replace(" ", "__")})
-            dict_top3.update({"score": i['Tweet_Volume']})
-            dict_top3.update({"ri": round(i['Rate_Increase'], 2)})
-            print dict_top3
-            # print i['Hashtag']
-            a.append(dict_top3)
-            count = count + 1
-        #print count
-    print ("hello")
-    print a
-    return a
+	dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
+	db_trends = dbclient['Twitter_Trends']
+	db_coll = db_trends.Trends_Place
+	hashtags = db_coll.find({}).distinct("Hashtag")
+	a=[]
+	for tag in hashtags:
+		dict_top = list(db_coll.find({"Hashtag": tag}, {"Hashtag": 1, "Timestamp": 1, "Tweet_Volume": 1}))
+		length = len(dict_top)
+		init_vol = dict_top[length-2]['Tweet_Volume']
+		final_vol = dict_top[length-1]['Tweet_Volume']
+		rate_increase = (float(float(final_vol - init_vol)/init_vol)) * 100
+		dict_top3 = {}
+		dict_top3.update({"name": tag.replace(" ", "__")})
+		dict_top3.update({"score": dict_top[length-1]['Tweet_Volume']})
+		dict_top3.update({"ri": round(rate_increase, 2)})
+		a.append(dict_top3)
+	dbclient.close()
+	sorted_dict3 = sorted(a, key=lambda k: k['score'], reverse=True)
+	b = a[0:100]
+	return b
+"""
+count = 0
+for i in dict_top_risers:
+    if (count > 1):
+        break
+    if i['Hashtag'] not in fetched:
+        dict_top3 = {}
+        fetched.append(i['Hashtag'])
+        print i['Hashtag'], i['Rate_Increase']
+        dict_top3.update({"name": i['Hashtag'].replace(" ", "__")})
+        dict_top3.update({"score": i['Tweet_Volume']})
+        dict_top3.update({"ri": round(i['Rate_Increase'], 2)})
+        print dict_top3
+        # print i['Hashtag']
+        a.append(dict_top3)
+        count = count + 1
+    #print count
+  
+print ("hello")
+print a
+return a
+"""  
 # tweet_fetch("#IndiaontheRise", '10')
 
 
