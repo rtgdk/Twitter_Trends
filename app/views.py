@@ -11,6 +11,7 @@ from twython import Twython
 from pymongo import MongoClient
 import math
 import datetime
+import json
 
 
 # Create your views here.
@@ -24,14 +25,6 @@ def days_between(d1, d2):
 
 def index(request):
     context_dict = {}
-    # return render(request, 'app/index.html',context_dict)
-    # print context_dict
-    #dbclient = MongoClient("mongodb://admin:admin@54.172.143.59:27017")
-    #db_trends = dbclient['Twitter_Trends']
-    #db_coll_trends = db_trends.Trends_Place
-    #hlist = []
-    # tvlist = []
-    # rlist = []
     count = 0
     print "here"
     """for i in cdict:
@@ -59,17 +52,13 @@ def index(request):
 
 # woeid = "India"
 def top_trends_fetch(woeid):
-    print "here2"
     a=[]
     return a
     dbclient = MongoClient("mongodb://admin:admin@54.172.143.59:27017")
-    print "here2"
     db_trends = dbclient['Twitter_Trends']
-    print "here2"
     db_coll_trends = db_trends.Trends_Place
     db_coll_freq = db_trends.Trends_Freq
     dict_trends = db_coll_trends.find({"Name": woeid}).sort([('_id', -1)])
-    print "here2"
     print dict_trends
     dict_top1 = {}
     dict_top2 = {}
@@ -78,55 +67,44 @@ def top_trends_fetch(woeid):
     ul = []
     count = 0
     for trend in dict_trends:
-        if count > 1:
+        if count > 100:
             break
-        if (trend['Hashtag'] not in ul):
-            print "here2hash"
+        if (ul.count(trend['Hashtag'])==0):
             ul.append(trend['Hashtag'])
             count = count + 1
-            # print dict_temp['Hashtag']
-            dict_freq = db_coll_freq.find({"Hashtag": trend['Hashtag']})
+            #dict_freq = db_coll_freq.find({"Hashtag": trend['Hashtag']})
             # timestamp = trend['Timestamp']
             # date1 = timestamp[0:10]
             # diff_days = days_between(str(date1), str(current_date))
             # if(diff_days>1):
             #    continue
             dict_top3 = {}
-
             # print trend
-            if (dict_freq.count() == 0):
-                print "here2if"
+            """if (dict_freq.count() == 0):
                 score3 = float(trend['Tweet_Volume'] * 1)
                 dict_top3.update({"name": trend['Hashtag'].replace(" ", "__")})
                 dict_top3.update({"score": score3})
                 dict_top3.update({"ri": round(trend['Rate_Increase'], 2)})
             else:
-                for i in dict_freq:
-                    # score1 = float(float(trend['Tweet_Volume'] * float(trend['Rate_Increase']/100)) + float(i['Frequency'] * i['Increase_Freq']))
-                    # score2 = float((trend['Tweet_Volume'] * i['Frequency']) * float((trend['Rate_Increase'] + i['Increase_Freq'])/2))
-                    print "here2else"
-                    score3 = float(trend['Tweet_Volume'] * i['Frequency'])
-                    # dict_top1.update({trend['Hashtag']:score1})
-                    # dict_top2.update({trend['Hashtag']:score2})
-                    dict_top3.update({"name": trend['Hashtag'].replace(" ", "__")})
-                    dict_top3.update({"score": score3})
-                    dict_top3.update({"ri": round(trend['Rate_Increase'], 2)})
-                    print dict_top3
-                    
-                    # print i['Hashtag']
+                for i in dict_freq:"""
+            #score3 = float(trend['Tweet_Volume'])
+            dict_top3.update({"name": trend['Hashtag'].replace(" ", "__")})
+            dict_top3.update({"score": trend['Tweet_Volume']})
+            dict_top3.update({"ri": trend['Tweet_Volume']})
             a.append(dict_top3)
+        elif (ul.count(trend['Hashtag'])==1):
+        		upd_tr = filter(lambda tw: tw['name'] == trend['Hashtag'], a)[0]
+        		ul.append(trend['Hashtag'])
+        		a.remove(upd_tr)
+        		final = upd_tr["ri"]
+        		init = trend["Tweet_Volume"]
+        		ri = ((final-init)/init)*100
+        		upd_tr.update({"ri":ri})
+        else :
+        		continue       	
     # dict_top3.update({trend['Hashtag']:score3})
-    # sorted_dict1 = sorted(dict_top1, key=dict_top1.get, reverse=True)
-    # sorted_dict2 = sorted(dict_top2, key=dict_top2.get, reverse=True)
-
-
     sorted_dict3 = sorted(a, key=lambda k: k['score'], reverse=True)
-# sorted_dict3 = sorted(a,key=itemgetter('name'),reverse=True)
-# print sorted_dict3
     return sorted_dict3
-
-import json
-
 
 def tweet_fetch(request,woeid, hashtag, count):
     #if (woeid==)
@@ -183,14 +161,17 @@ def fetch_top_risers():
 	hashtags = db_coll.find({}).distinct("Hashtag")
 	a=[]
 	for tag in hashtags:
-		dict_top = list(db_coll.find({"Hashtag": tag}, {"Hashtag": 1, "Timestamp": 1, "Tweet_Volume": 1}))
+		dict_top = list(db_coll.find({"Hashtag": tag}).sort([("_id", -1)]))
 		length = len(dict_top)
-		init_vol = dict_top[length-2]['Tweet_Volume']
-		final_vol = dict_top[length-1]['Tweet_Volume']
-		rate_increase = (float(float(final_vol - init_vol)/init_vol)) * 100
+		try:
+			init_vol = dict_top[1]['Tweet_Volume']
+			final_vol = dict_top[0]['Tweet_Volume']
+			rate_increase = (float(float(final_vol - init_vol)/init_vol)) * 100
+		except:
+			rate_increase = 0.0
 		dict_top3 = {}
 		dict_top3.update({"name": tag.replace(" ", "__")})
-		dict_top3.update({"score": dict_top[length-1]['Tweet_Volume']})
+		dict_top3.update({"score": dict_top[0]['Tweet_Volume']})
 		dict_top3.update({"ri": round(rate_increase, 2)})
 		a.append(dict_top3)
 	dbclient.close()
