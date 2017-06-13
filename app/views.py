@@ -159,7 +159,7 @@ def tweet_fetch(request,woeid, hashtag, count):
 
 def fetch_top_risers():
 	a=[]
-	return a
+	#return a
 	dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
 	db_trends = dbclient['Twitter_Trends']
 	db_coll = db_trends.Trends_Place
@@ -180,7 +180,7 @@ def fetch_top_risers():
 		a.append(dict_top3)
 	dbclient.close()
 	sorted_dict3 = sorted(a, key=lambda k: k['score'], reverse=True)
-	b = a[0:100]
+	b = sorted_dict3[0:100]
 	return b
 """
 count = 0
