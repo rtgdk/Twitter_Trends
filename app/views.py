@@ -16,7 +16,10 @@ import json
 
 # Create your views here.
 
-
+dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
+db_trends = dbclient['Twitter_Trends']
+#db_coll = db_trends.Trends_Place
+	
 def days_between(d1, d2):
     d1 = datetime.datetime.strptime(d1, "%Y-%m-%d").date()
     d2 = datetime.datetime.strptime(d2, "%Y-%m-%d").date()
@@ -54,8 +57,8 @@ def index(request):
 def top_trends_fetch(woeid):
     a=[]
     #return a
-    dbclient = MongoClient("mongodb://admin:admin@54.172.143.59:27017")
-    db_trends = dbclient['Twitter_Trends']
+    #dbclient = MongoClient("mongodb://admin:admin@54.172.143.59:27017")
+    #db_trends = dbclient['Twitter_Trends']
     db_coll_trends = db_trends.Trends_Place
     db_coll_freq = db_trends.Trends_Freq
     dict_trends = db_coll_trends.find({"Name": woeid}).sort([('_id', -1)])
@@ -113,8 +116,8 @@ def tweet_fetch(request,woeid, hashtag, count):
     #if (woeid==)
     # return HttpResponse(hashtag)
     hashtag = hashtag.replace("__"," ")
-    dbclient = MongoClient("mongodb://admin:admin@54.172.143.59:27017")
-    db_trends = dbclient['Twitter_Trends']
+    #dbclient = MongoClient("mongodb://admin:admin@54.172.143.59:27017")
+    #db_trends = dbclient['Twitter_Trends']
     db_coll_trends = db_trends.Trends_Place
     hash_dict = db_coll_trends.find({"Hashtag": hashtag})
     if hash_dict.count() == 0:
@@ -159,9 +162,9 @@ def tweet_fetch(request,woeid, hashtag, count):
 
 def fetch_top_risers():
 	a=[]
-	#return a
-	dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
-	db_trends = dbclient['Twitter_Trends']
+	return a
+	#dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
+	#db_trends = dbclient['Twitter_Trends']
 	db_coll = db_trends.Trends_Place
 	hashtags = db_coll.find({}).distinct("Hashtag")
 	for tag in hashtags:
