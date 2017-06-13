@@ -1,0 +1,215 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% load staticfiles %}
+{% block body1 %}
+<style>
+.arrow {
+    font-size: 24px;
+}
+.container .jumbotron {
+padding-left: 0px; !important
+}
+@media (min-width: 1200px){
+.container {
+    width: 1650px;
+}
+}
+@media (min-width: 992px) and (max-width: 1200px){
+.container {
+    width: 970px;
+}
+}
+@media (min-width: 768px) and (max-width: 992px){
+.container {
+    width: 750px;
+}
+}
+.table > tbody > tr > td {
+	vertical-align: middle;
+}
+</style>
+<div class="container" >
+      <!-- Example row of columns -->
+  <div class="row">
+    <div class="col-md-4">
+      <h2>{{country1}}</h2>
+       <table class="table table-bordered table-hover">
+       <thead>
+       <tr><td>Trends</td>
+       	<td>Score</td><td></td>
+       	<td>Rate</td>
+      </thead>	
+     <tbody>
+      {% for i in newt1 %}
+      <tr><td class="h4"><strong ><a href="#ex1" class="ajax" data-toggle="modal" data-target="#ex1" id ={{ i.name }} name={{ country1 }}>{{ i.name}} </a></strong>
+      </td><td><strong >{{ i.score }}</strong></td>
+      {% if i.ri > 0 %}
+      <td><strong ><p class="arrow" style="color:green;"> &#x2191; </p></strong></td><td>{{i.ri}}</td>
+      {% elif i.ri < 0 %}
+      <td><strong ><p class="arrow" style="color:red;"> &#x2193; </p></strong></td><td>{{i.ri}}</td>
+      {% else %}
+      <td><strong ><p class="arrow" style="color:black;">-</p></strong></td><td>{{i.ri}}</td>
+      {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+    </div>
+    
+    <div class="col-md-4">
+      <h2>{{country2}}</h2>
+       <table class="table table-bordered table-hover">
+       <thead>
+       <tr><td>Trends</td>
+       	<td>Score</td><td></td>
+       	<td>Rate</td>
+      </thead>	
+     <tbody>
+      {% for i in newt2 %}
+      <tr><td class="h4"><strong ><a href="#ex1" class="ajax" data-toggle="modal" data-target="#ex1" id ={{ i.name }} name={{ country2 }}>{{ i.name}} </a></strong>
+      </td><td><strong >{{ i.score }}</strong></td>
+      {% if i.ri > 0 %}
+      <td><strong ><p class="arrow" style="color:green;"> &#x2191; </p></strong></td><td>{{i.ri}}</td>
+      {% elif i.ri < 0 %}
+      <td><strong ><p class="arrow" style="color:red;"> &#x2193; </p></strong></td><td>{{i.ri}}</td>
+      {% else %}
+      <td><strong ><p class="arrow" style="color:black;">-</p></strong></td><td>{{i.ri}}</td>
+      {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+    </div>
+    <div class="col-md-4">
+      <h2>{{country3}}</h2>
+       <table class="table table-bordered table-hover">
+       <thead>
+       <tr><td>Trends</td>
+       	<td>Score</td><td></td>
+       	<td>Rate</td>
+      </thead>	
+     <tbody>
+      {% for i in topr %}
+      <tr><td class="h4"><strong ><a href="#ex1" class="ajax" data-toggle="modal" data-target="#ex1" id ={{ i.name }} name="topriser">{{ i.name}} </a></strong>
+      </td><td><strong >{{ i.score }}</strong></td>
+      {% if i.ri > 0 %}
+      <td><strong ><p class="arrow" style="color:green;"> &#x2191; </p></strong></td><td>{{i.ri}}</td>
+      {% elif i.ri < 0 %}
+      <td><strong ><p class="arrow" style="color:red;"> &#x2193; </p></strong></td><td>{{i.ri}}</td>
+      {% else %}
+      <td><strong ><p class="arrow" style="color:black;">-</p></strong></td><td>{{i.ri}}</td>
+      {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+    </div>
+</div>
+<div id="ex1" class="modal fade " role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modalhead" class="modal-title"></h4>
+      </div>
+       <div id="charthere" class="col-xs-offset-1" style="width:811px; height:414px;">
+       	
+  			<canvas id="myChart"></canvas>
+   		</div>
+      <div id="modalbody" class="modal-body">
+      	
+      </div>
+     
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+  <!-- Link to open the modal -->
+  <!--<p><a href="#ex1" class= "ajax" rel="modal:open" id ="1">Open Modal</a></p>
+  <p><a href="#ex1" class= "ajax" rel="modal:open" id ="2">Open Modal2</a></p>-->
+  
+   <script src="{% static 'js/Chart.bundle.min.js' %}"></script>
+
+   
+<script>
+function makechart(lab,time,data) {
+	var ctx = document.getElementById("myChart");
+	console.log("heythere");
+	console.log(data);
+	console.log(time);
+	console.log(lab);
+	var myChart = new Chart(ctx, {
+		  type:"line",
+		  data:{"labels": time,   //["January","February","March","April","May","June","July"],
+				datasets:[{
+					label: lab,  //"My First Dataset",
+					data: data,   //[65,59,80,81,56,55,40],
+					fill:true,
+					borderColor:"rgb(75, 192, 192)",
+					lineTension:0.3}]
+					},
+		  options:{}});
+		  }
+</script>
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+ <script>
+ $(document).ready(function(){
+    $('.ajax').click(function(event){
+    	$("#charthere").empty();
+    	$("#charthere").append('<canvas id="myChart"></canvas>')
+    	$("#modalbody").empty();
+    	$("#modalhead").empty();
+       //event.preventDefault();
+			 console.log("hello");
+       var href = $(this).attr('href');
+       var woeid = $(this).attr('name');
+       var tid = $(this).attr('id').replace(/#/i, "");
+       var target = '/app/ajaxtweets/' + woeid +'/'+ tid +'/10/';
+       console.log(tid);
+       $("#modalhead").append(tid);
+       console.log(target);
+       //$( target ).load( href );
+				$.ajax({
+		      url: target,
+		      dataType: 'json',
+		      success: function (response) {
+		      	console.log(response);
+		      	console.log(response.tweets);
+		        //$(tid).text(response);
+		        for( var i = 0; i < response.tweets.length; i++) {
+									$("#modalbody").append("<p><bold>"+response.tweets[i]+"</bold></p><hr>");
+							}
+						var str = tid;
+						var array1 = response.timestamp //["January","February","March","April","May","June","July"];
+						var array2 = response.tweetvol
+						console.log(response.tweetvol) //[65,59,80,81,56,55,40];
+						var ctx = document.getElementById("myChart");
+						console.log("heythere");
+						//console.log(data);
+						//console.log(time);
+						//console.log(lab);
+						var myChart = new Chart(ctx, {
+								responsive: false,
+								type:"line",
+								data:{"labels": array1,   //["January","February","March","April","May","June","July"],
+									datasets:[{
+										label: str,  //"My First Dataset",
+										data: array2,   //[65,59,80,81,56,55,40],
+										fill:true,
+										borderColor:"rgb(75, 192, 192)",
+										lineTension:0.3}]
+										},
+								options:{}});
+							//$("#ex1").append("Hello<div style='width:511px; height:514px;'>Hello<canvas id='myChart'></canvas></div>");
+						//makechart(str,array1,array2);
+		      }
+		    });
+      });
+});
+ </script>
+{% endblock %}
