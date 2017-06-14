@@ -14,6 +14,7 @@ import datetime
 import json
 import random
 
+from .models import Woeid
 # Create your views here.
 
 dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
@@ -30,14 +31,6 @@ def index(request):
     context_dict = {}
     count = 0
     print "here"
-    """for i in cdict:
-        tvlist = {}
-        tvlist["hash"]=i['Hashtag']
-        tvlist["tv"]=i['Tweet_Volume']
-        tvlist["ri"]=math.ceil(i['Rate_Increase']*100)/100
-        #count=count+1
-        hlist.append(tvlist)
-        #print i['Hashtag']"""
     context_dict["newt2"] = top_trends_fetch("India")
     context_dict["newt1"] = top_trends_fetch("Worldwide")
     context_dict["country2"] = "India"
@@ -69,6 +62,7 @@ def top_trends_fetch(woeid):
     #a = []
     ul = []
     count = 0
+    db_coll = db_trends.Trends_Place_Rate
     for trend in dict_trends:
         if count > 100:
             break
@@ -82,37 +76,43 @@ def top_trends_fetch(woeid):
             # if(diff_days>1):
             #    continue
             dict_top3 = {}
-            # print trend
-            """if (dict_freq.count() == 0):
-                score3 = float(trend['Tweet_Volume'] * 1)
-                dict_top3.update({"name": trend['Hashtag'].replace(" ", "__")})
-                dict_top3.update({"score": score3})
-                dict_top3.update({"ri": round(trend['Rate_Increase'], 2)})
-            else:
-                for i in dict_freq:"""
-            #score3 = float(trend['Tweet_Volume'])
             dict_top3.update({"name": trend['Hashtag'].replace(" ", "__")})
-            dict_top3.update({"score": trend['Tweet_Volume']})
+            
+            try:
+            		#print db_coll.find({"Hashtag":trend['Hashtag']})
+                tag = list(db_coll.find({"Hashtag":trend['Hashtag']}))[0]
+                print len(tag)
+                vol_dict = tag["Vol_Dict"]
+                score=0
+                for i in vol_dict:
+                    score = score + len(vol_dict[i])-1
+            except:
+                print "wrong"
+                score = 1
+                
+            #dict_top3.update({"score": random.randrange(20,45)})
+            dict_top3.update({"score": score})
             dict_top3.update({"ri": trend['Tweet_Volume']})
             a.append(dict_top3)
         elif (ul.count(trend['Hashtag'])==1):
-        		try:
-		      		upd_tr = filter(lambda tw: tw['name'] == str(trend['Hashtag']), a)[0]
-		      		ul.append(trend['Hashtag'])
-		      		a.remove(upd_tr)
-		      		final = upd_tr["ri"]
-		      		init = trend["Tweet_Volume"]
-		      		ri = (float(final-init)/init)*100
-		      		upd_tr.update({"ri":round(ri,2)})
-		      		a.append(upd_tr)
-		      		#print "hi"+trend['Hashtag']
-		      	except:
-		      		pass
-        else :
-        		continue       	
+            try:
+                upd_tr = filter(lambda tw: tw['name'] == str(trend['Hashtag']), a)[0]
+                ul.append(trend['Hashtag'])
+                a.remove(upd_tr)
+                final = upd_tr["ri"]
+                init = trend["Tweet_Volume"]
+                ri = (float(final-init)/init)*100
+                upd_tr.update({"ri":round(ri,2)})
+                a.append(upd_tr)
+                #print "hi"+trend['Hashtag']
+            except:
+                pass
+        else:
+            continue
     # dict_top3.update({trend['Hashtag']:score3})
     sorted_dict3 = sorted(a, key=lambda k: k['score'], reverse=True)
     return sorted_dict3
+
 
 def tweet_fetch(request,woeid, hashtag, count):
     #if (woeid==)
@@ -160,36 +160,45 @@ def tweet_fetch(request,woeid, hashtag, count):
     #print b
     return HttpResponse(b)
     #print b
-    return HttpResponse(b,e,f)
+    #return HttpResponse(b,e,f)
 
 def fetch_top_risers():
-	a=[]
-	#return a
-	#dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
-	#db_trends = dbclient['Twitter_Trends']
-	print "here3"
-	#db_coll = db_trends.Trends_Just_Rate
-	db_coll = db_trends.Final_Just_Rate
-	print "here3"
-	#hashtags = db_coll.find({}).distinct("Hashtag")
-	dict_top = list(db_coll.find({}).sort([("Rate_Inc",-1)]).limit(50))
-	#print dict_top
-	#print "here3"	
-	#return a
-	for tag in dict_top:
-		dict_top3 = {}
-		dict_top3.update({"name": tag["Hashtag"].replace(" ", "__")})
-		#dict_top3.update({"score": int((tag["Rate_Inc"] + tag["Rate_Inc"]*random.random()))})
-		dict_top3.update({"score": tag["Score"]})
-		dict_top3.update({"ri": round(tag["Rate_Inc"], 2)})
-		a.append(dict_top3)
-	print "DOne"
-	#print dict_top
-	return a
+    a=[]
+    #return a
+    #dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
+    #db_trends = dbclient['Twitter_Trends']
+    print "here3"
+    #db_coll = db_trends.Trends_Just_Rate
+    db_coll = db_trends.Trends_Place_Rate
+    print "here3"
+    #hashtags = db_coll.find({}).distinct("Hashtag")
+    dict_top = list(db_coll.find({}).sort([("Rate_Inc",-1)]).limit(5))
+    #print dict_top
+    #print "here3"
+    #return a
+    for tag in dict_top:
+        dict_top3 = {}
+        dict_top3.update({"name": tag["Hashtag"].replace(" ", "__")})
+        #dict_top3.update({"score": int((tag["Rate_Inc"] + tag["Rate_Inc"]*random.random()))})
+        vol_dict = tag["Vol_Dict"]
+        score=0
+        #print vol_dict
+        for i in vol_dict:
+            score = score + len(vol_dict[i])-1
+        dict_top3.update({"score": score})
+        dict_top3.update({"ri": round(tag["Rate_Inc"], 2)})
+        a.append(dict_top3)
+    print "DOne"
+    #print dict_top
+    return a
 	
+def autocompleteModel(request):
+    if 'term' in request.GET:
+        tags = Woeid.objects.filter(name__icontains=request.GET['term']).values_list('name',flat=True)[:5]
+        return HttpResponse( json.dumps( [ tag for tag in tags ] ) )
+    return HttpResponse()	
 	
-	
-	"""
+"""
 	for tag in hashtags:
 		dict_top = list(db_coll.find({"Hashtag": tag}).sort([("_id", -1)]))
 		length = len(dict_top)
@@ -208,7 +217,7 @@ def fetch_top_risers():
 	sorted_dict3 = sorted(a, key=lambda k: k['score'], reverse=True)
 	b = sorted_dict3[0:100]
 	return b
-	"""
+"""
 """
 count = 0
 for i in dict_top_risers:

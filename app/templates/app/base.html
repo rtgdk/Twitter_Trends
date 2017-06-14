@@ -29,7 +29,13 @@
             <span class="icon-bar"></span>
           </button>
           <a class="navbar-brand" href="#">Twitter</a>
+
         </div>
+        <form class="navbar-form navbar-centre">
+            <div class="form-group">
+              <input type="search" id="search" placeholder="Search..." class="form-control">
+            </div>
+        </form>
         <div id="navbar" class="navbar-collapse collapse">
         </div><!--/.navbar-collapse -->
       </div>
@@ -42,6 +48,14 @@
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/Chart.bundle.min.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.js' %}"></script>
+		<script>
+		$(document).ready(function () {
+				$("#search").autocomplete({
+				    source: "/app/search/",
+				});
+		});
+		</script>
     {% block script_block %}{% endblock %}
   </body>
 </html>

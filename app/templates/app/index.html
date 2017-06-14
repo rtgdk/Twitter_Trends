@@ -26,8 +26,30 @@ padding-left: 0px; !important
 }
 .table > tbody > tr > td {
 	vertical-align: middle;
+} 
+input[type=search] {
+            background: white;
+            font-weight: bold;
+            border-color: #2e2e2e;
+            border-style: solid;
+            border-width: 2px 2px 2px 2px;
+            outline: none;
+            padding: 10px 20px 10px 20px;
+            width: 250px;
+        }
+      /*Css to target the dropdownbox*/
+ul.ui-autocomplete {
+						background: white;
+            color: #0084b4; !important;
+            -moz-border-radius: 15px;
+            border-radius: 15px;
+            width: 250px;
+}
+li.ui-menu-item {
+						font-size:25px;
 }
 </style>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 <div class="container" >
       <!-- Example row of columns -->
   <div class="row">
@@ -112,13 +134,14 @@ padding-left: 0px; !important
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 id="modalhead" class="modal-title"></h4>
+        <h3 id="modalhead" class="modal-title text-center" style="color:#0084b4;" ></h3>
       </div>
-       <div id="charthere" class="col-xs-offset-1" style="width:811px; height:414px;">
-       	
-  			<canvas id="myChart"></canvas>
-   		</div>
-      <div id="modalbody" class="modal-body">
+      <div class="col-xs-offset-1 col-centered" style="display:inline-block">
+		     <div id="charthere" class="topleft" style="text-align:center;width:811px; height:414px;float:left;">
+					<canvas id="myChart"></canvas>
+		 		</div>
+		 	</div>
+      <div id="modalbody" class="modal-body center-block text-center">
       	
       </div>
      
@@ -151,7 +174,7 @@ function makechart(lab,time,data) {
 					data: data,   //[65,59,80,81,56,55,40],
 					fill:true,
 					borderColor:"rgb(75, 192, 192)",
-					lineTension:0.3}]
+					lineTension:1}]
 					},
 		  options:{}});
 		  }
@@ -161,6 +184,7 @@ function makechart(lab,time,data) {
  $(document).ready(function(){
     $('.ajax').click(function(event){
     	$("#charthere").empty();
+    	$("#charthere").append('<ul class="nav nav-tabs"><li class="active "><a href="#">Score</a></li><li><a href="#">Volume</a></li><li><a href="#">Rate</a></li></ul>')
     	$("#charthere").append('<canvas id="myChart"></canvas>')
     	$("#modalbody").empty();
     	$("#modalhead").empty();
@@ -181,14 +205,18 @@ function makechart(lab,time,data) {
 		      	console.log(response);
 		      	console.log(response.tweets);
 		        //$(tid).text(response);
+		        $("#modalbody").append('<h2 style="color:#0084b4;"><bold><u> Top Tweets </u></bold></h2><hr>')
 		        for( var i = 0; i < response.tweets.length; i++) {
-									$("#modalbody").append("<p><bold>"+response.tweets[i]+"</bold></p><hr>");
+									$("#modalbody").append("<h3><bold>"+response.tweets[i]+"</bold></h3><hr>");
 							}
+						//$("#modalbody").append('</div>')
 						var str = tid;
 						var array1 = response.timestamp //["January","February","March","April","May","June","July"];
 						var array2 = response.tweetvol
 						console.log(response.tweetvol) //[65,59,80,81,56,55,40];
 						var ctx = document.getElementById("myChart");
+						var ctx2 = document.getElementById("myChart2");
+						var ctx3 = document.getElementById("myChart3");
 						console.log("heythere");
 						//console.log(data);
 						//console.log(time);
@@ -198,13 +226,37 @@ function makechart(lab,time,data) {
 								type:"line",
 								data:{"labels": array1,   //["January","February","March","April","May","June","July"],
 									datasets:[{
-										label: str,  //"My First Dataset",
+										label: "1",  //str //"My First Dataset",
 										data: array2,   //[65,59,80,81,56,55,40],
 										fill:true,
 										borderColor:"rgb(75, 192, 192)",
 										lineTension:0.3}]
 										},
 								options:{}});
+						/*var myChart2 = new Chart(ctx2, {
+								responsive: false,
+								type:"line",
+								data:{"labels": array1,   //["January","February","March","April","May","June","July"],
+									datasets:[{
+										label: "2",  //"My First Dataset",
+										data: array2,   //[65,59,80,81,56,55,40],
+										fill:true,
+										borderColor:"rgb(75, 192, 192)",
+										lineTension:0.3}]
+										},
+								options:{}});
+						var myChart3 = new Chart(ctx3, {
+								responsive: false,
+								type:"line",
+								data:{"labels": array1,   //["January","February","March","April","May","June","July"],
+									datasets:[{
+										label: "3",  //"My First Dataset",
+										data: array2,   //[65,59,80,81,56,55,40],
+										fill:true,
+										borderColor:"rgb(75, 192, 192)",
+										lineTension:0.3}]
+										},
+								options:{}});*/
 							//$("#ex1").append("Hello<div style='width:511px; height:514px;'>Hello<canvas id='myChart'></canvas></div>");
 						//makechart(str,array1,array2);
 		      }
@@ -212,4 +264,12 @@ function makechart(lab,time,data) {
       });
 });
  </script>
+<script src="{% static 'js/jquery-ui.js' %}"></script>
+<script>
+$(document).ready(function () {
+    $("#search").autocomplete({
+        source: "/app/search/",
+    });
+});
+</script>
 {% endblock %}
