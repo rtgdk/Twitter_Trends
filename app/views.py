@@ -66,7 +66,7 @@ def top_trends_fetch(woeid):
     dict_top1 = {}
     dict_top2 = {}
     current_date = datetime.date.today()
-    a = []
+    #a = []
     ul = []
     count = 0
     for trend in dict_trends:
@@ -97,13 +97,15 @@ def top_trends_fetch(woeid):
             a.append(dict_top3)
         elif (ul.count(trend['Hashtag'])==1):
         		try:
-		      		upd_tr = filter(lambda tw: tw['name'] == trend['Hashtag'], a)[0]
+		      		upd_tr = filter(lambda tw: tw['name'] == str(trend['Hashtag']), a)[0]
 		      		ul.append(trend['Hashtag'])
 		      		a.remove(upd_tr)
 		      		final = upd_tr["ri"]
 		      		init = trend["Tweet_Volume"]
-		      		ri = ((final-init)/init)*100
-		      		upd_tr.update({"ri":ri})
+		      		ri = (float(final-init)/init)*100
+		      		upd_tr.update({"ri":round(ri,2)})
+		      		a.append(upd_tr)
+		      		#print "hi"+trend['Hashtag']
 		      	except:
 		      		pass
         else :
@@ -166,20 +168,23 @@ def fetch_top_risers():
 	#dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
 	#db_trends = dbclient['Twitter_Trends']
 	print "here3"
-	db_coll = db_trends.Trends_Just_Rate
+	#db_coll = db_trends.Trends_Just_Rate
+	db_coll = db_trends.Final_Just_Rate
 	print "here3"
 	#hashtags = db_coll.find({}).distinct("Hashtag")
-	dict_top = list(db_coll.find({}).sort([("Rate_Inc",-1)]).limit(500))[450:500]
-	print dict_top
-	print "here3"	
+	dict_top = list(db_coll.find({}).sort([("Rate_Inc",-1)]).limit(50))
+	#print dict_top
+	#print "here3"	
 	#return a
 	for tag in dict_top:
 		dict_top3 = {}
 		dict_top3.update({"name": tag["Hashtag"].replace(" ", "__")})
-		dict_top3.update({"score": (tag["Rate_Inc"] + tag["Rate_Inc"]*random.random())})
+		#dict_top3.update({"score": int((tag["Rate_Inc"] + tag["Rate_Inc"]*random.random()))})
+		dict_top3.update({"score": tag["Score"]})
 		dict_top3.update({"ri": round(tag["Rate_Inc"], 2)})
 		a.append(dict_top3)
-	print dict_top
+	print "DOne"
+	#print dict_top
 	return a
 	
 	
