@@ -205,7 +205,7 @@ function makechart(lab,time,data) {
 		      	console.log(response);
 		      	console.log(response.tweets);
 		        //$(tid).text(response);
-		        $("#modalbody").append('<h2 style="color:#0084b4;"><bold><u> Top Tweets </u></bold></h2><hr>')
+		        $("#modalbody").append('<hr><h2 style="color:#0084b4;"><bold><u> Top Tweets </u></bold></h2><hr>')
 		        for( var i = 0; i < response.tweets.length; i++) {
 									$("#modalbody").append("<h3><bold>"+response.tweets[i]+"</bold></h3><hr>");
 							}
