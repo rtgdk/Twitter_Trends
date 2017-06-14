@@ -162,11 +162,29 @@ def tweet_fetch(request,woeid, hashtag, count):
 
 def fetch_top_risers():
 	a=[]
-	return a
+	#return a
 	#dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
 	#db_trends = dbclient['Twitter_Trends']
-	db_coll = db_trends.Trends_Place
-	hashtags = db_coll.find({}).distinct("Hashtag")
+	print "here3"
+	db_coll = db_trends.Trends_Just_Rate
+	print "here3"
+	#hashtags = db_coll.find({}).distinct("Hashtag")
+	dict_top = list(db_coll.find({}).sort([("Rate_Inc",-1)]).limit(500))[450:500]
+	print dict_top
+	print "here3"	
+	#return a
+	for tag in dict_top:
+		dict_top3 = {}
+		dict_top3.update({"name": tag["Hashtag"].replace(" ", "__")})
+		dict_top3.update({"score": "1"})
+		dict_top3.update({"ri": round(tag["Rate_Inc"], 2)})
+		a.append(dict_top3)
+	print dict_top
+	return a
+	
+	
+	
+	"""
 	for tag in hashtags:
 		dict_top = list(db_coll.find({"Hashtag": tag}).sort([("_id", -1)]))
 		length = len(dict_top)
@@ -185,6 +203,7 @@ def fetch_top_risers():
 	sorted_dict3 = sorted(a, key=lambda k: k['score'], reverse=True)
 	b = sorted_dict3[0:100]
 	return b
+	"""
 """
 count = 0
 for i in dict_top_risers:
