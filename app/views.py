@@ -12,7 +12,7 @@ from pymongo import MongoClient
 import math
 import datetime
 import json
-
+import random
 
 # Create your views here.
 
@@ -176,7 +176,7 @@ def fetch_top_risers():
 	for tag in dict_top:
 		dict_top3 = {}
 		dict_top3.update({"name": tag["Hashtag"].replace(" ", "__")})
-		dict_top3.update({"score": "1"})
+		dict_top3.update({"score": (tag["Rate_Inc"] + tag["Rate_Inc"]*random.random())})
 		dict_top3.update({"ri": round(tag["Rate_Inc"], 2)})
 		a.append(dict_top3)
 	print dict_top
