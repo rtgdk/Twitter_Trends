@@ -164,7 +164,7 @@ def tweet_fetch(request,woeid, hashtag, count):
 
 def fetch_top_risers():
     a=[]
-    #return a
+    return a
     #dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
     #db_trends = dbclient['Twitter_Trends']
     print "here3"

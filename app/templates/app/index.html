@@ -48,12 +48,24 @@ ul.ui-autocomplete {
 li.ui-menu-item {
 						font-size:25px;
 }
+.navbar-inverse {
+    background-color: #337ab7;
+    border-color: #080808;
+}
+.navbar-inverse .navbar-brand {
+    color: #fff;
+    background-color: transparent;
+}
 </style>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 <div class="container" >
       <!-- Example row of columns -->
+      <ul class="nav nav-pills nav-justified" >
+				<li class="active" style="font-size:20px;"><a href="#">Top Trending</a></li>
+				<li style="font-size:20px;"><a href="#">Top Riser</a></li>
+			</ul>
   <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
       <h2>{{country1}}</h2>
        <table class="table table-bordered table-hover">
        <thead>
@@ -78,7 +90,7 @@ li.ui-menu-item {
   </table>
     </div>
     
-    <div class="col-md-4">
+    <div class="col-md-5">
       <h2>{{country2}}</h2>
        <table class="table table-bordered table-hover">
        <thead>
@@ -102,7 +114,7 @@ li.ui-menu-item {
     </tbody>
   </table>
     </div>
-    <div class="col-md-4">
+    <!--<div class="col-md-4">
       <h2>{{country3}}</h2>
        <table class="table table-bordered table-hover">
        <thead>
@@ -125,7 +137,7 @@ li.ui-menu-item {
       {% endfor %}
     </tbody>
   </table>
-    </div>
+    </div>-->
 </div>
 <div id="ex1" class="modal fade " role="dialog">
   <div class="modal-dialog modal-lg">
@@ -184,7 +196,7 @@ function makechart(lab,time,data) {
  $(document).ready(function(){
     $('.ajax').click(function(event){
     	$("#charthere").empty();
-    	$("#charthere").append('<ul class="nav nav-tabs"><li class="active "><a href="#">Volume</a></li><li><a href="#">Score</a></li><li><a href="#">Rate</a></li></ul>')
+    	$("#charthere").append('<ul class="nav nav-pills nav-justified"><li class="active "><a href="#">Volume</a></li><li><a href="#">Score</a></li><li><a href="#">Rate</a></li></ul>')
     	$("#charthere").append('<canvas id="myChart"></canvas>')
     	$("#modalbody").empty();
     	$("#modalhead").empty();
