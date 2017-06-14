@@ -154,8 +154,8 @@ def tweet_fetch(request,woeid, hashtag, count):
     # print ''
     response = {}
     response["tweets"] = a
-    response["timestamp"] = c
-    response["tweetvol"] = d
+    response["timestamp"] = c[:20]
+    response["tweetvol"] = d[:20]
     b = json.dumps(response)
     #print b
     return HttpResponse(b)
