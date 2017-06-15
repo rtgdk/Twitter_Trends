@@ -51,7 +51,7 @@ def index(request):
 # woeid = "India"
 def top_trends_fetch(woeid):
     a=[]
-    return a
+    #return a
     #dbclient = MongoClient("mongodb://admin:admin@54.172.143.59:27017")
     #db_trends = dbclient['Twitter_Trends']
     db_coll_trends = db_trends.Trends_Place
@@ -186,11 +186,12 @@ def fetch_top_risers():
 def fetch_top_risers2(woeid):
 	db_coll = db_trends.Trends_Place
 	db_coll_tr = db_trends.Trends_Rate
-	list_tr = db_coll.find({"Woeid":woeid}).distinct("Hashtag")
+	list_tr = db_coll.find({"Name":woeid}).distinct("Hashtag")
 	a=[]
-	print list_tr
+	#return a
+	print len(list_tr)
 	for i in list_tr:
-		print (i)
+		#print (i)
 		try:
 			d=list(db_coll_tr.find({"Hashtag":i}))[0]
 			dict_top={}
@@ -199,7 +200,9 @@ def fetch_top_risers2(woeid):
 			score = db_coll.find({"Hashtag":i}).distinct("Woeid")
 			dict_top.update({"score": len(score)})
 			a.append(dict_top)
+	#		print "right"
 		except:
+	#		print "wrong"
 			pass
 	sorted_dict3 = sorted(a, key=lambda k: k['ri'], reverse=True)
 	return sorted_dict3
