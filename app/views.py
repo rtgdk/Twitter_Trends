@@ -84,13 +84,13 @@ def top_trends_fetch(woeid):
                 #print len(tag)
                 #vol_dict = tag["Vol_Dict"]
                 score = len(db_coll_trends.find({"Hashtag":trend['Hashtag']}).distinct("Woeid"))
-                print "score done"
+                #print "score done"
                 ri = list(db_coll_rate.find({"Hashtag":trend['Hashtag']}))[0]
-                print "rate done"
+                #print "rate done"
                 #print type(ri)
                 #print (ri)
                 dict_top3.update({"ri": round(ri["Rate_Increase"],2)})
-                print "ri don e"
+                #print "ri don e"
                 #score=0
                 #for i in vol_dict:
                     #score = score + len(vol_dict[i])-1
@@ -191,7 +191,7 @@ def fetch_top_risers2(woeid):
 	db_coll_tr = db_trends.Trends_Rate
 	list_tr = db_coll.find({"Name":woeid}).distinct("Hashtag")
 	a=[]
-	#return a
+	return a
 	print len(list_tr)
 	d=list(db_coll_tr.find({}).sort("_id", -1))   # trends rate list
 	#e=list(db_coll.find({}).sort("_id", -1))			# all trends list
