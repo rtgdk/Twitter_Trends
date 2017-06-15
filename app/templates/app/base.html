@@ -14,8 +14,75 @@
 
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/jumbotron.css' %}" rel="stylesheet" type="text/css">
+    <!--<link href="{% static 'css/w3.css' %}" rel="stylesheet" type="text/css">-->
     
  {% block head_block %}{% endblock %}
+<style>
+.arrow {
+    font-size: 24px;
+}
+.container .jumbotron {
+padding-left: 0px; !important
+}
+@media (min-width: 1200px){
+.container {
+    width: 1500px;
+}
+}
+@media (min-width: 992px) and (max-width: 1200px){
+.container {
+    width: 970px;
+}
+}
+@media (min-width: 768px) and (max-width: 992px){
+.container {
+    width: 750px;
+}
+}
+.table > tbody > tr > td {
+  vertical-align: middle;
+} 
+
+input[type=search] {
+            background: white;
+            font-weight: bold;
+            border-color: #337ab7;
+            border-style: solid;
+            border-width: 2px 2px 2px 4px;
+            outline: none;
+            background-color: white;
+        background-image:  url({% static 'images/searchicon.png' %});
+        background-position: 4px 4px; 
+        background-repeat: no-repeat;
+            padding: 0px 20px 0px 30px;
+            width: 250px;
+        }
+      /*Css to target the dropdownbox*/
+ul.ui-autocomplete {
+            background: white;
+            color: #0084b4; !important;
+            -moz-border-radius: 15px;
+            border-radius: 15px;
+            width: 250px;
+}
+li.ui-menu-item {
+            font-size:25px;
+}
+.navbar-inverse {
+    background-color: #337ab7;
+    border-color: #080808;
+}
+.navbar-inverse .navbar-brand {
+    color: #fff;
+    background-color: transparent;
+}
+.h4{
+  color:#337ab7;; !important;
+}
+#searchic {
+    background-image: url({% static 'images/searchicon.png' %});
+}
+</style>
 	</head>
   <body>
 

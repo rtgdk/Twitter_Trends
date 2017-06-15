@@ -2,76 +2,25 @@
 {% load static %}
 {% load staticfiles %}
 {% block body1 %}
-<style>
-.arrow {
-    font-size: 24px;
-}
-.container .jumbotron {
-padding-left: 0px; !important
-}
-@media (min-width: 1200px){
-.container {
-    width: 1650px;
-}
-}
-@media (min-width: 992px) and (max-width: 1200px){
-.container {
-    width: 970px;
-}
-}
-@media (min-width: 768px) and (max-width: 992px){
-.container {
-    width: 750px;
-}
-}
-.table > tbody > tr > td {
-	vertical-align: middle;
-} 
-input[type=search] {
-            background: white;
-            font-weight: bold;
-            border-color: #2e2e2e;
-            border-style: solid;
-            border-width: 2px 2px 2px 2px;
-            outline: none;
-            padding: 10px 20px 10px 20px;
-            width: 250px;
-        }
-      /*Css to target the dropdownbox*/
-ul.ui-autocomplete {
-						background: white;
-            color: #0084b4; !important;
-            -moz-border-radius: 15px;
-            border-radius: 15px;
-            width: 250px;
-}
-li.ui-menu-item {
-						font-size:25px;
-}
-.navbar-inverse {
-    background-color: #337ab7;
-    border-color: #080808;
-}
-.navbar-inverse .navbar-brand {
-    color: #fff;
-    background-color: transparent;
-}
-</style>
+
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+<ul class="nav nav-tabs nav-justified" >
+				<li  class="active" style="font-size:20px;"><a data-toggle="tab" href="#tt">Top Trends</a></li>
+				<li style="font-size:20px;"><a data-toggle="tab" href="#tr">Top Risers</a></li>
+			</ul>
 <div class="container" >
       <!-- Example row of columns -->
-      <ul class="nav nav-pills nav-justified" >
-				<li data-toggle="tab" class="active" style="font-size:20px;"><a href="#">Top Trending</a></li>
-				<li data-toggle="tab"style="font-size:20px;"><a href="#">Top Riser</a></li>
-			</ul>
+      
   <div class="row">
-    <div class="col-md-6">
+  <div class="tab-content">
+  	<div id="tt" class="tab-pane fade in active">
+    <div class="col-xs-6">
       <h2>{{country1}}</h2>
        <table class="table table-bordered table-hover">
        <thead>
        <tr><td>Trends</td>
        	<td>Score</td><td></td>
-       	<td>Rate</td>
+       	<td>Rate</td></tr>
       </thead>	
      <tbody>
       {% for i in newt1 %}
@@ -90,13 +39,13 @@ li.ui-menu-item {
   </table>
     </div>
     
-    <div class="col-md-5">
+    <div class="col-xs-6">
       <h2>{{country2}}</h2>
        <table class="table table-bordered table-hover">
        <thead>
        <tr><td>Trends</td>
        	<td>Score</td><td></td>
-       	<td>Rate</td>
+       	<td>Rate</td></tr>
       </thead>	
      <tbody>
       {% for i in newt2 %}
@@ -114,6 +63,58 @@ li.ui-menu-item {
     </tbody>
   </table>
     </div>
+ </div>
+ 	<div id="tr" class="tab-pane fade">
+	 	<div class="col-xs-6">
+	      <h2>{{country3}}</h2>
+	       <table class="table table-bordered table-hover">
+	       <thead>
+	       <tr><td>Trends</td>
+	       	<td>Score</td><td></td>
+	       	<td>Rate</td>
+	      </thead>	
+	     <tbody>
+	      {% for i in topr %}
+	      <tr><td class="h4"><strong ><a href="#ex1" class="ajax" data-toggle="modal" data-target="#ex1" id ={{ i.name }} name="topriser">{{ i.name}} </a></strong>
+	      </td><td><strong >{{ i.score }}</strong></td>
+	      {% if i.ri > 0 %}
+	      <td><strong ><p class="arrow" style="color:green;"> &#x2191; </p></strong></td><td>{{i.ri}}</td>
+	      {% elif i.ri < 0 %}
+	      <td><strong ><p class="arrow" style="color:red;"> &#x2193; </p></strong></td><td>{{i.ri}}</td>
+	      {% else %}
+	      <td><strong ><p class="arrow" style="color:black;">-</p></strong></td><td>{{i.ri}}</td>
+	      {% endif %}
+	      </tr>
+	      {% endfor %}
+	    </tbody>
+	  	</table>
+	    </div>  
+	    <div class="col-xs-6">
+	      <h2>{{country4}}</h2>
+	       <table class="table table-bordered table-hover">
+	       <thead>
+	       <tr><td>Trends</td>
+	       	<td>Score</td><td></td>
+	       	<td>Rate</td>
+	      </thead>	
+	     <tbody>
+	      {% for i in topr2 %}
+	      <tr><td class="h4"><strong ><a href="#ex1" class="ajax" data-toggle="modal" data-target="#ex1" id ={{ i.name }} name="topriser">{{ i.name}} </a></strong>
+	      </td><td><strong >{{ i.score }}</strong></td>
+	      {% if i.ri > 0 %}
+	      <td><strong ><p class="arrow" style="color:green;"> &#x2191; </p></strong></td><td>{{i.ri}}</td>
+	      {% elif i.ri < 0 %}
+	      <td><strong ><p class="arrow" style="color:red;"> &#x2193; </p></strong></td><td>{{i.ri}}</td>
+	      {% else %}
+	      <td><strong ><p class="arrow" style="color:black;">-</p></strong></td><td>{{i.ri}}</td>
+	      {% endif %}
+	      </tr>
+	      {% endfor %}
+	    </tbody>
+	  	</table>
+	    </div> 
+	</div>
+ </div>
     <!--<div class="col-md-4">
       <h2>{{country3}}</h2>
        <table class="table table-bordered table-hover">
@@ -217,10 +218,13 @@ function makechart(lab,time,data) {
 		      	console.log(response);
 		      	console.log(response.tweets);
 		        //$(tid).text(response);
-		        $("#modalbody").append('<hr><h2 style="color:#0084b4;"><bold><u> Top Tweets </u></bold></h2><hr>')
+		        $("#modalbody").append('<hr><h2 style="color:#0084b4;text-align: center"><bold><u> Top Tweets </u></bold></h2><hr>')
 		        for( var i = 0; i < response.tweets.length; i++) {
-									$("#modalbody").append("<h3><bold>"+response.tweets[i]+"</bold></h3><hr>");
+								$("#modalbody").append("<h5 style='padding: 0 10%;text-align: left;'><bold >"+response.tweets[i]+"</bold></h5><hr>");
+								//$("#modalbody").append('<div class="w3-card-4 w3-blue" style="padding: 0 10%;width:100%;"><div class="w3-container"><p>'+response.tweets[i]+'</p></div></div><hr>')
+								
 							}
+						$("#modalbody").append("<a class ='text-center' href='/app/hashtag/"+tid+"/'> View More</a>")
 						//$("#modalbody").append('</div>')
 						var str = tid;
 						var array1 = response.timestamp //["January","February","March","April","May","June","July"];
