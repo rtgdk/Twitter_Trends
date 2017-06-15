@@ -197,8 +197,11 @@ def fetch_top_risers2(woeid):
 	print len(list_tr)
 	d=list(db_coll_tr.find({}).sort("_id", -1))   # trends rate list
 	#e=list(db_coll.find({}).sort("_id", -1))			# all trends list
+	count = 0
 	for i in list_tr:
 		#print (i)
+		if count >50 :
+			break
 		try:	
 			dict_top={}
 			ri = list(filter(lambda person: person['Hashtag'] == i, d))[0]
@@ -207,9 +210,10 @@ def fetch_top_risers2(woeid):
 			score = db_coll.find({"Hashtag":i}).distinct("Woeid")
 			dict_top.update({"score": len(score)})
 			a.append(dict_top)
-	#		print "right"
+			count = count +1
+			print "right"
 		except:
-	#		print "wrong"
+			print "wrong"
 			pass
 	sorted_dict3 = sorted(a, key=lambda k: k['ri'], reverse=True)
 	return sorted_dict3
