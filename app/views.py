@@ -91,7 +91,7 @@ def top_trends_fetch(woeid):
                 print "rate done"
                 #print type(ri)
                 #print (ri)
-                dict_top3.update({"ri": ri["Rate_Increase"]})
+                dict_top3.update({"ri": round(ri["Rate_Increase"],2)})
                 print "ri don e"
                 #score=0
                 #for i in vol_dict:
@@ -203,7 +203,7 @@ def fetch_top_risers2(woeid):
 			dict_top={}
 			ri = list(filter(lambda person: person['Hashtag'] == i, people))[0]
 			dict_top.update({"name":i.replace(" ", "__")})
-			dict_top.update({"ri":ri["Rate_Increase"]})
+			dict_top.update({"ri":round(ri["Rate_Increase"],2)})
 			score = db_coll.find({"Hashtag":i}).distinct("Woeid")
 			dict_top.update({"score": len(score)})
 			a.append(dict_top)
