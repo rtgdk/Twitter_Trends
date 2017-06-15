@@ -19,8 +19,6 @@ from .models import Woeid
 
 dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
 db_trends = dbclient['Twitter_Trends']
-db_coll_trends = db_trends.Trends_Place
-db_coll_rate = db_trends.Trends_Rate
 #db_coll = db_trends.Trends_Place
 	
 def days_between(d1, d2):
@@ -33,19 +31,14 @@ def index(request):
     context_dict = {}
     count = 0
     print "here"
-    list_trends = list(db_coll_trends.find({}).sort('_id', -1))
-    print "done list_trends"
-    list_rate = list(db_coll_rate.find({}))
-    print "done list_rate"
-    #db_coll_rate = db_trends.Trends_Rate
-    context_dict["newt2"] = top_trends_fetch("India",list_trends,list_rate)
-    context_dict["newt1"] = top_trends_fetch("Worldwide",list_trends,list_rate)
+    context_dict["newt2"] = top_trends_fetch("India")
+    context_dict["newt1"] = top_trends_fetch("Worldwide")
     context_dict["country2"] = "India"
     context_dict["country1"] = "Worldwide"
     context_dict["country3"] = "Worldwide"
     context_dict["country4"] = "India"
-    context_dict['topr'] = fetch_top_risers2("Worldwide",list_trends,list_rate)
-    context_dict['topr2'] = fetch_top_risers2("India",list_trends,list_rate)
+    context_dict['topr'] = fetch_top_risers()
+    context_dict['topr2'] = fetch_top_risers2("India")
     #context_dict["tweets"] = hlist
     # context_dict["volume"]= tvlist
     # context_dict["rate"]= rlist
@@ -56,22 +49,28 @@ def index(request):
 #from operator import itemgetter
 
 # woeid = "India"
-def top_trends_fetch(woeid,list_trends,list_rate):
+def top_trends_fetch(woeid):
     a=[]
     #return a
-    dict_trends = list(filter(lambda person: person['Name'] == woeid, list_trends))
-    #db_coll_trends.find({"Name": woeid}).sort([('_id', -1)])
+    db_coll_trends = db_trends.Trends_Place
+    #db_coll_freq = db_trends.Trends_Freq
+    dict_trends = db_coll_trends.find({"Name": woeid}).sort([('_id', -1)])
     print dict_trends
+    dict_top1 = {}
+    dict_top2 = {}
     #current_date = datetime.date.today()
+    #a = []
     ul = []
     count = 0
-    #db_coll_rate = db_trends.Trends_Rate
+    #db_coll = db_trends.Trends_Place_Rate
+    db_coll_rate = db_trends.Trends_Rate
     for trend in dict_trends:
         if count > 100:
             break
         if (ul.count(trend['Hashtag'])==0):
             ul.append(trend['Hashtag'])
             count = count + 1
+            #dict_freq = db_coll_freq.find({"Hashtag": trend['Hashtag']})
             # timestamp = trend['Timestamp']
             # date1 = timestamp[0:10]
             # diff_days = days_between(str(date1), str(current_date))
@@ -84,12 +83,9 @@ def top_trends_fetch(woeid,list_trends,list_rate):
                 #tag = list(db_coll.find({"Hashtag":trend['Hashtag']}))[0]
                 #print len(tag)
                 #vol_dict = tag["Vol_Dict"]
-                no_hasht = list(filter(lambda person: person['Hashtag'] == trend['Hashtag'], list_trends))
-                #score = len(db_coll_trends.find({"Hashtag":trend['Hashtag']}).distinct("Woeid"))
-                score = len({v['Woeid']: v for v in no_hasht})
+                score = len(db_coll_trends.find({"Hashtag":trend['Hashtag']}).distinct("Woeid"))
                 print "score done"
-                #ri = list(db_coll_rate.find({"Hashtag":trend['Hashtag']}))[0]
-                ri = list(filter(lambda person: person['Hashtag'] == trend['Hashtag'], list_rate))[0]
+                ri = list(db_coll_rate.find({"Hashtag":trend['Hashtag']}))[0]
                 print "rate done"
                 #print type(ri)
                 #print (ri)
@@ -99,7 +95,7 @@ def top_trends_fetch(woeid,list_trends,list_rate):
                 #for i in vol_dict:
                     #score = score + len(vol_dict[i])-1
             except:
-                print "wrong"
+                #print "wrong"
                 score = 1
                 dict_top3.update({"ri": 1})
             #dict_top3.update({"score": random.randrange(20,45)})
@@ -162,7 +158,7 @@ def tweet_fetch(request,woeid, hashtag, count):
 
 def fetch_top_risers():
     a=[]
-    return a
+    #return a
     #dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
     #db_trends = dbclient['Twitter_Trends']
     print "here3"
@@ -190,15 +186,14 @@ def fetch_top_risers():
     #print dict_top
     return a
 
-def fetch_top_risers2(woeid,list_trends,list_rate):
-	#db_coll = db_trends.Trends_Place
-	#db_coll_tr = db_trends.Trends_Rate
-	#list_tr = db_coll.find({"Name":woeid}).distinct("Hashtag")
-	list_tr = list(filter(lambda person: person['Name'] == woeid , list_trends))
+def fetch_top_risers2(woeid):
+	db_coll = db_trends.Trends_Place
+	db_coll_tr = db_trends.Trends_Rate
+	list_tr = db_coll.find({"Name":woeid}).distinct("Hashtag")
 	a=[]
 	#return a
-	#print len(list_tr)
-	#d=list(db_coll_tr.find({}).sort("_id", -1))   # trends rate list
+	print len(list_tr)
+	d=list(db_coll_tr.find({}).sort("_id", -1))   # trends rate list
 	#e=list(db_coll.find({}).sort("_id", -1))			# all trends list
 	count = 0
 	for i in list_tr:
@@ -207,13 +202,11 @@ def fetch_top_risers2(woeid,list_trends,list_rate):
 			break
 		try:	
 			dict_top={}
-			ri = list(filter(lambda person: person['Hashtag'] == list_rate, d))[0]
-			dict_top.update({"name":i["Hashtag"].replace(" ", "__")})
+			ri = list(filter(lambda person: person['Hashtag'] == i, d))[0]
+			dict_top.update({"name":i.replace(" ", "__")})
 			dict_top.update({"ri":round(ri["Rate_Increase"],2)})
-			#score = db_coll.find({"Hashtag":i}).distinct("Woeid")
-			no_hasht = list(filter(lambda person: person['Hashtag'] == i["Hashtag"], list_trends))
-			score = len({v['Woeid']: v for v in no_hasht})
-			dict_top.update({"score": score})
+			score = db_coll.find({"Hashtag":i}).distinct("Woeid")
+			dict_top.update({"score": len(score)})
 			a.append(dict_top)
 			count = count +1
 			print "right"
