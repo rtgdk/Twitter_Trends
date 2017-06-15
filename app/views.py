@@ -37,7 +37,7 @@ def index(request):
     context_dict["country1"] = "Worldwide"
     context_dict["country3"] = "Worldwide"
     context_dict["country4"] = "India"
-    context_dict['topr'] = fetch_top_risers()
+    context_dict['topr'] = fetch_top_risers2("Worldwide")
     context_dict['topr2'] = fetch_top_risers2("India")
     #context_dict["tweets"] = hlist
     # context_dict["volume"]= tvlist
@@ -55,12 +55,12 @@ def top_trends_fetch(woeid):
     #dbclient = MongoClient("mongodb://admin:admin@54.172.143.59:27017")
     #db_trends = dbclient['Twitter_Trends']
     db_coll_trends = db_trends.Trends_Place
-    db_coll_freq = db_trends.Trends_Freq
+    #db_coll_freq = db_trends.Trends_Freq
     dict_trends = db_coll_trends.find({"Name": woeid}).sort([('_id', -1)])
     print dict_trends
     dict_top1 = {}
     dict_top2 = {}
-    current_date = datetime.date.today()
+    #current_date = datetime.date.today()
     #a = []
     ul = []
     count = 0
@@ -86,8 +86,13 @@ def top_trends_fetch(woeid):
                 #print len(tag)
                 #vol_dict = tag["Vol_Dict"]
                 score = len(db_coll_trends.find({"Hashtag":trend['Hashtag']}).distinct("Woeid"))
-                ri = db_coll_rate.find({"Hashtag":trend['Hashtag']})
+                print "score done"
+                ri = list(db_coll_rate.find({"Hashtag":trend['Hashtag']}))[0]
+                print "rate done"
+                #print type(ri)
+                #print (ri)
                 dict_top3.update({"ri": ri["Rate_Increase"]})
+                print "ri don e"
                 #score=0
                 #for i in vol_dict:
                     #score = score + len(vol_dict[i])-1
@@ -155,7 +160,7 @@ def tweet_fetch(request,woeid, hashtag, count):
 
 def fetch_top_risers():
     a=[]
-    #return a
+    return a
     #dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
     #db_trends = dbclient['Twitter_Trends']
     print "here3"
@@ -190,13 +195,15 @@ def fetch_top_risers2(woeid):
 	a=[]
 	#return a
 	print len(list_tr)
+	d=list(db_coll_tr.find({}).sort("_id", -1))   # trends rate list
+	#e=list(db_coll.find({}).sort("_id", -1))			# all trends list
 	for i in list_tr:
 		#print (i)
-		try:
-			d=list(db_coll_tr.find({"Hashtag":i}))[0]
+		try:	
 			dict_top={}
+			ri = list(filter(lambda person: person['Hashtag'] == i, people))[0]
 			dict_top.update({"name":i.replace(" ", "__")})
-			dict_top.update({"ri":d["Rate_Increase"]})
+			dict_top.update({"ri":ri["Rate_Increase"]})
 			score = db_coll.find({"Hashtag":i}).distinct("Woeid")
 			dict_top.update({"score": len(score)})
 			a.append(dict_top)
