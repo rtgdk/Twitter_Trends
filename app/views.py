@@ -201,7 +201,7 @@ def fetch_top_risers2(woeid):
 		#print (i)
 		try:	
 			dict_top={}
-			ri = list(filter(lambda person: person['Hashtag'] == i, people))[0]
+			ri = list(filter(lambda person: person['Hashtag'] == i, d))[0]
 			dict_top.update({"name":i.replace(" ", "__")})
 			dict_top.update({"ri":round(ri["Rate_Increase"],2)})
 			score = db_coll.find({"Hashtag":i}).distinct("Woeid")
