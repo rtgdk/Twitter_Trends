@@ -31,6 +31,8 @@ def index(request):
     context_dict = {}
     count = 0
     print "here"
+    #context_dict["newt2"] , context_dict["topr2"] = fetch_all("India")
+    #context_dict["newt1"] , context_dict["topr1"] = fetch_all("Worldwide")
     context_dict["newt2"] = top_trends_fetch("India")
     context_dict["newt1"] = top_trends_fetch("Worldwide")
     context_dict["country2"] = "India"
@@ -49,20 +51,97 @@ def index(request):
 #from operator import itemgetter
 
 # woeid = "India"
+"""
+def fetch_all(woeid):
+	a=[]
+	b=[]
+	db_coll_trends = db_trends.Trends_Place
+	db_coll_rate = db_trends.Trends_Rate
+	dict_trends = list(db_coll_trends.find({"Name": woeid}).sort('_id', -1))
+	ul=[]
+	count = 0
+	for trend in dict_trends:
+		if count>100:
+			break
+		if (ul.count(trend['Hashtag'])==0):
+			count= count+1
+			try:
+				ul.append(trend['Hashtag'])
+				dict_top3.update({"name": trend['Hashtag'].replace(" ", "__")})
+				count = count + 1
+				score = len(db_coll_trends.find({"Hashtag":trend['Hashtag']}).distinct("Woeid"))
+				dict_top3.update({"score": score})
+				ri = round(list(db_coll_rate.find({"Hashtag":trend['Hashtag']}))[0]["Rate_Increase"],2)
+				dict_top3.update({"ri": ri})
+			except:
+				dict_top3.update({"name": trend['Hashtag'].replace(" ", "__")})
+				dict_top3.update({"score": 1})
+				dict_top3.update({"ri": 1})
+			a.append(dict_top3)
+	sorted_dict3 = sorted(a, key=lambda k: k['score'], reverse=True)
+	distinct_dict_trends = ({v['Hashtag']: v for v in dict_trends})
+	d=list(db_coll_tr.find({}).sort("Rate_Increase", -1)
+	for i in distinct_dict_trends:
+		if count > 50:
+			break
+		try:
+			dict_tr = {}
+			ri = list(filter(lambda person: person['Hashtag'] == i["Hashtag"], d))[0]["Rate_Increase"]
+			dict_tr.update({"name":i.replace(" ", "__")})
+			dict_tr.update({"ri":round(ri,2)})
+			find_hash = list(filter(lambda person: person['Hashtag'] == i["Hashtag"], dict_trends))
+			score = ({v['Woeid']: v for v in find_hash})
+			dict_tr.update({"score": len(score)})
+		except:
+			dict_tr.update({"name":i.replace(" ", "__")})
+			dict_tr.update({"ri":1})
+			dict_tr.update({"score": 1})
+		b.append(dict_tr)
+		sorted_dict4 = sorted(b key=lambda k: k['ri'], reverse=True)
+		return sorted_dict4,sorted_dict3
+"""
+def fetch_top_risers2(woeid):
+	db_coll = db_trends.Trends_Place
+	db_coll_tr = db_trends.Trends_Rate
+	list_tr = db_coll.find({"Name":woeid}).distinct("Hashtag")
+	a=[]
+	#return a
+	print len(list_tr)
+	d=list(db_coll_tr.find({}).sort("Rate_Increase", -1))   # trends rate list
+	#e=list(db_coll.find({}).sort("_id", -1))			# all trends list
+	count = 0
+	for i in list_tr:
+		#print (i)
+		if count >50 :
+			break
+		try:	
+			dict_top={}
+			ri = list(filter(lambda person: person['Hashtag'] == i, d))[0]
+			dict_top.update({"name":i.replace(" ", "__")})
+			dict_top.update({"ri":round(ri["Rate_Increase"],2)})
+			score = db_coll.find({"Hashtag":i}, {"Woeid":1}).distinct("Woeid")
+			dict_top.update({"score": len(score)})
+			a.append(dict_top)
+			count = count +1
+			print "right"
+		except:
+			print "wrong"
+			pass
+	sorted_dict3 = sorted(a, key=lambda k: k['ri'], reverse=True)
+	return sorted_dict3
+	
+					
 def top_trends_fetch(woeid):
     a=[]
     #return a
     db_coll_trends = db_trends.Trends_Place
-    #db_coll_freq = db_trends.Trends_Freq
     dict_trends = db_coll_trends.find({"Name": woeid}).sort([('_id', -1)])
     print dict_trends
     dict_top1 = {}
     dict_top2 = {}
     #current_date = datetime.date.today()
-    #a = []
     ul = []
     count = 0
-    #db_coll = db_trends.Trends_Place_Rate
     db_coll_rate = db_trends.Trends_Rate
     for trend in dict_trends:
         if count > 100:
@@ -70,7 +149,6 @@ def top_trends_fetch(woeid):
         if (ul.count(trend['Hashtag'])==0):
             ul.append(trend['Hashtag'])
             count = count + 1
-            #dict_freq = db_coll_freq.find({"Hashtag": trend['Hashtag']})
             # timestamp = trend['Timestamp']
             # date1 = timestamp[0:10]
             # diff_days = days_between(str(date1), str(current_date))
@@ -84,13 +162,13 @@ def top_trends_fetch(woeid):
                 #print len(tag)
                 #vol_dict = tag["Vol_Dict"]
                 score = len(db_coll_trends.find({"Hashtag":trend['Hashtag']}).distinct("Woeid"))
-                #print "score done"
+                print "score done"
                 ri = list(db_coll_rate.find({"Hashtag":trend['Hashtag']}))[0]
-                #print "rate done"
+                print "rate done"
                 #print type(ri)
                 #print (ri)
                 dict_top3.update({"ri": round(ri["Rate_Increase"],2)})
-                #print "ri don e"
+                print "ri don e"
                 #score=0
                 #for i in vol_dict:
                     #score = score + len(vol_dict[i])-1
@@ -106,6 +184,7 @@ def top_trends_fetch(woeid):
     # dict_top3.update({trend['Hashtag']:score3})
     sorted_dict3 = sorted(a, key=lambda k: k['score'], reverse=True)
     return sorted_dict3
+
 
 
 def tweet_fetch(request,woeid, hashtag, count):
@@ -186,35 +265,7 @@ def fetch_top_risers():
     #print dict_top
     return a
 
-def fetch_top_risers2(woeid):
-	db_coll = db_trends.Trends_Place
-	db_coll_tr = db_trends.Trends_Rate
-	list_tr = db_coll.find({"Name":woeid}).distinct("Hashtag")
-	a=[]
-	#return a
-	print len(list_tr)
-	d=list(db_coll_tr.find({}).sort("Rate_Increase", -1))   # trends rate list
-	#e=list(db_coll.find({}).sort("_id", -1))			# all trends list
-	count = 0
-	for i in list_tr:
-		#print (i)
-		if count >50 :
-			break
-		try:	
-			dict_top={}
-			ri = list(filter(lambda person: person['Hashtag'] == i, d))[0]
-			dict_top.update({"name":i.replace(" ", "__")})
-			dict_top.update({"ri":round(ri["Rate_Increase"],2)})
-			score = db_coll.find({"Hashtag":i}).distinct("Woeid")
-			dict_top.update({"score": len(score)})
-			a.append(dict_top)
-			count = count +1
-			print "right"
-		except:
-			print "wrong"
-			pass
-	sorted_dict3 = sorted(a, key=lambda k: k['ri'], reverse=True)
-	return sorted_dict3
+
 		
 def hashtag(request,hasht):
 	context_dict={}
