@@ -193,7 +193,7 @@ def fetch_top_risers2(woeid):
 	a=[]
 	return a
 	print len(list_tr)
-	d=list(db_coll_tr.find({}).sort("_id", -1))   # trends rate list
+	d=list(db_coll_tr.find({}).sort("Rate_Increase", -1))   # trends rate list
 	#e=list(db_coll.find({}).sort("_id", -1))			# all trends list
 	count = 0
 	for i in list_tr:
