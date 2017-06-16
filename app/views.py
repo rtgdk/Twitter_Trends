@@ -191,7 +191,7 @@ def fetch_top_risers2(woeid):
 	db_coll_tr = db_trends.Trends_Rate
 	list_tr = db_coll.find({"Name":woeid}).distinct("Hashtag")
 	a=[]
-	return a
+	#return a
 	print len(list_tr)
 	d=list(db_coll_tr.find({}).sort("Rate_Increase", -1))   # trends rate list
 	#e=list(db_coll.find({}).sort("_id", -1))			# all trends list
