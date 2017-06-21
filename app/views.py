@@ -17,7 +17,7 @@ from tqdm import tqdm
 from .models import Woeid
 # Create your views here.
 
-dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
+dbclient = MongoClient('mongodb://admin:admin@54.80.161.204:27017')
 db_trends = dbclient['Twitter_Trends']
 #db_coll = db_trends.Trends_Place
 	
@@ -72,7 +72,7 @@ def fetch_all(woeid,d):
 	dict_trends = list(db_coll_trends.find({"Name": woeid,"Timestamp": {"$gt": tdate}}).sort('_id', -1))
 	ul=[]
 	count = 0
-	for trend in dict_trends:
+	for trend in tqdm(dict_trends):
 		if count>100:
 			break
 		if (ul.count(trend['Hashtag'])==0):
@@ -98,7 +98,7 @@ def fetch_all(woeid,d):
 	print("Distinct")
 	print distinct_dict_trends
 	count = 0;
-	for i in distinct_dict_trends:
+	for i in tqdm(distinct_dict_trends):
 		if count > 50:
 			break
 		try:
@@ -294,4 +294,3 @@ def autocompleteModel(request):
         tags = Woeid.objects.filter(name__icontains=request.GET['term']).values_list('name',flat=True)[:5]
         return HttpResponse( json.dumps( [ tag for tag in tags ] ) )
     return HttpResponse()	
-
