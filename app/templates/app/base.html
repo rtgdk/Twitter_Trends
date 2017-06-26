@@ -19,17 +19,17 @@
  {% block head_block %}{% endblock %}
 <style>
 .arrow {
-    font-size: 24px;
+    font-size: 12px;
 }
 .container .jumbotron {
 padding-left: 0px; !important
 }
-@media (min-width: 1200px){
+@media (min-width: 1281px){
 .container {
-    width: 1200px;
+    width: 1370px;
 }
 }
-@media (min-width: 992px) and (max-width: 1200px){
+@media (min-width: 992px) and (max-width: 1281px){
 .container {
     width: 970px;
 }
@@ -83,7 +83,7 @@ li.ui-menu-item {
     background-image: url({% static 'images/searchicon.png' %});
 }
 </style>
-	</head>
+    </head>
   <body>
 
      <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -116,13 +116,13 @@ li.ui-menu-item {
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/Chart.bundle.min.js' %}"></script>
     <script src="{% static 'js/jquery-ui.js' %}"></script>
-		<script>
-		$(document).ready(function () {
-				$("#search").autocomplete({
-				    source: "/app/search/",
-				});
-		});
-		</script>
+        <script>
+        $(document).ready(function () {
+                $("#search").autocomplete({
+                    source: "/app/search/",
+                });
+        });
+        </script>
     {% block script_block %}{% endblock %}
   </body>
 </html>
