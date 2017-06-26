@@ -18,7 +18,9 @@ from .models import Woeid
 # Create your views here.
 
 #dbclient = MongoClient('mongodb://admin:admin@54.80.161.204:27017')
-dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
+#dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
+dbclient = MongoClient('mongodb://admin:admin@54.172.130.187:27017')
+
 db_trends = dbclient['Twitter_Trends']
 #db_coll = db_trends.Trends_Place
     
