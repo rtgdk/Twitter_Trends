@@ -21,7 +21,7 @@ from .models import Woeid
 dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
 db_trends = dbclient['Twitter_Trends']
 #db_coll = db_trends.Trends_Place
-	
+    
 def days_between(d1, d2):
     d1 = datetime.datetime.strptime(d1, "%Y-%m-%d").date()
     d2 = datetime.datetime.strptime(d2, "%Y-%m-%d").date()
@@ -65,91 +65,92 @@ def index(request):
 # woeid = "India"
 
 def fetch_all(woeid,d):
-	a=[]
-	b=[]
-	db_coll_trends = db_trends.Trends_Place
-	db_coll_rate = db_trends.Trends_Rate
-	tdate = str(datetime.date.today())+"T00:00:00Z"
-	dict_trends = list(db_coll_trends.find({"Name": woeid,"Timestamp": {"$gt": tdate}}).sort('_id', -1))
-	ul=[]
-	count = 0
-	for trend in tqdm(dict_trends):
-		if count>100:
-			break
-		if (ul.count(trend['Hashtag'])==0):
-			count= count+1
-			dict_top3={}
-			try:
-				ul.append(trend['Hashtag'])
-				dict_top3.update({"name": trend['Hashtag'].replace(" ", "__")})
-				count = count + 1
-				score = len(db_coll_trends.find({"Hashtag":trend['Hashtag']}).distinct("Woeid"))
-				dict_top3.update({"score": score})
-				ri = round(list(db_coll_rate.find({"Hashtag":trend['Hashtag']}))[0]["Rate_Increase"],2)
-				dict_top3.update({"ri": ri})
-			except:
-				dict_top3.update({"name": trend['Hashtag'].replace(" ", "__")})
-				dict_top3.update({"score": 1})
-				dict_top3.update({"ri": 1})
-			a.append(dict_top3)
-	sorted_dict3 = sorted(a, key=lambda k: k['score'], reverse=True)
-	print sorted_dict3
-	print ("Trends done")
-	distinct_dict_trends = ({v['Hashtag']: v for v in dict_trends})
-	print("Distinct")
-	print distinct_dict_trends
-	count = 0;
-	for i in tqdm(distinct_dict_trends):
-		if count > 50:
-			break
-		try:
-			dict_tr = {}
-			ri = list(filter(lambda person: person['Hashtag'] == i["Hashtag"], d))[0]["Rate_Increase"]
-			dict_tr.update({"name":i.replace(" ", "__")})
-			dict_tr.update({"ri":round(ri,2)})
-			find_hash = list(filter(lambda person: person['Hashtag'] == i["Hashtag"], dict_trends))
-			score = ({v['Woeid']: v for v in find_hash})
-			dict_tr.update({"score": len(score)})
-		except:
-			dict_tr.update({"name":i.replace(" ", "__")})
-			dict_tr.update({"ri":1})
-			dict_tr.update({"score": 1})
-		b.append(dict_tr)
-	sorted_dict4 = sorted(b, key=lambda k: k['ri'], reverse=True)
-	print ("Rise done")
-	return (sorted_dict3,sorted_dict4)
+    a=[]
+    b=[]
+    db_coll_trends = db_trends.Trends_Place
+    db_coll_rate = db_trends.Trends_Rate
+    #tdate = str(datetime.date.today())+"T00:00:00Z"
+    tdate ='2017-06-18T00:00:00Z'
+    dict_trends = list(db_coll_trends.find({"Name": woeid,"Timestamp": {"$gt": tdate}}).sort('_id', -1))
+    ul=[]
+    count = 0
+    for trend in tqdm(dict_trends):
+        if count>100:
+            break
+        if (ul.count(trend['Hashtag'])==0):
+            count= count+1
+            dict_top3={}
+            try:
+                ul.append(trend['Hashtag'])
+                dict_top3.update({"name": trend['Hashtag'].replace(" ", "__")})
+                count = count + 1
+                score = len(db_coll_trends.find({"Hashtag":trend['Hashtag']}).distinct("Woeid"))
+                dict_top3.update({"score": score})
+                ri = round(list(db_coll_rate.find({"Hashtag":trend['Hashtag']}))[0]["Rate_Increase"],2)
+                dict_top3.update({"ri": ri})
+            except:
+                dict_top3.update({"name": trend['Hashtag'].replace(" ", "__")})
+                dict_top3.update({"score": 1})
+                dict_top3.update({"ri": 1})
+            a.append(dict_top3)
+    sorted_dict3 = sorted(a, key=lambda k: k['score'], reverse=True)
+    print sorted_dict3
+    print ("Trends done")
+    distinct_dict_trends = ({v['Hashtag']: v for v in dict_trends})
+    print("Distinct")
+    print distinct_dict_trends
+    count = 0;
+    for i in tqdm(distinct_dict_trends):
+        if count > 50:
+            break
+        try:
+            dict_tr = {}
+            ri = list(filter(lambda person: person['Hashtag'] == i["Hashtag"], d))[0]["Rate_Increase"]
+            dict_tr.update({"name":i.replace(" ", "__")})
+            dict_tr.update({"ri":round(ri,2)})
+            find_hash = list(filter(lambda person: person['Hashtag'] == i["Hashtag"], dict_trends))
+            score = ({v['Woeid']: v for v in find_hash})
+            dict_tr.update({"score": len(score)})
+        except:
+            dict_tr.update({"name":i.replace(" ", "__")})
+            dict_tr.update({"ri":1})
+            dict_tr.update({"score": 1})
+        b.append(dict_tr)
+    sorted_dict4 = sorted(b, key=lambda k: k['ri'], reverse=True)
+    print ("Rise done")
+    return (sorted_dict3,sorted_dict4)
 
 def fetch_top_risers2(woeid):
-	db_coll = db_trends.Trends_Place
-	db_coll_tr = db_trends.Trends_Rate
-	list_tr = db_coll.find({"Name":woeid}).distinct("Hashtag")
-	a=[]
-	#return a
-	print len(list_tr)
-	d=list(db_coll_tr.find({}).sort("Rate_Increase", -1))   # trends rate list
-	#e=list(db_coll.find({}).sort("_id", -1))			# all trends list
-	count = 0
-	for i in list_tr:
-		#print (i)
-		if count >50 :
-			break
-		try:	
-			dict_top={}
-			ri = list(filter(lambda person: person['Hashtag'] == i, d))[0]
-			dict_top.update({"name":i.replace(" ", "__")})
-			dict_top.update({"ri":round(ri["Rate_Increase"],2)})
-			score = db_coll.find({"Hashtag":i}, {"Woeid":1}).distinct("Woeid")
-			dict_top.update({"score": len(score)})
-			a.append(dict_top)
-			count = count +1
-			print "right"
-		except:
-			print "wrong"
-			pass
-	sorted_dict3 = sorted(a, key=lambda k: k['ri'], reverse=True)
-	return sorted_dict3
-	
-					
+    db_coll = db_trends.Trends_Place
+    db_coll_tr = db_trends.Trends_Rate
+    list_tr = db_coll.find({"Name":woeid}).distinct("Hashtag")
+    a=[]
+    #return a
+    print len(list_tr)
+    d=list(db_coll_tr.find({}).sort("Rate_Increase", -1))   # trends rate list
+    #e=list(db_coll.find({}).sort("_id", -1))           # all trends list
+    count = 0
+    for i in list_tr:
+        #print (i)
+        if count >50 :
+            break
+        try:    
+            dict_top={}
+            ri = list(filter(lambda person: person['Hashtag'] == i, d))[0]
+            dict_top.update({"name":i.replace(" ", "__")})
+            dict_top.update({"ri":round(ri["Rate_Increase"],2)})
+            score = db_coll.find({"Hashtag":i}, {"Woeid":1}).distinct("Woeid")
+            dict_top.update({"score": len(score)})
+            a.append(dict_top)
+            count = count +1
+            print "right"
+        except:
+            print "wrong"
+            pass
+    sorted_dict3 = sorted(a, key=lambda k: k['ri'], reverse=True)
+    return sorted_dict3
+    
+                    
 def top_trends_fetch(woeid):
     a=[]
     #return a
@@ -176,7 +177,7 @@ def top_trends_fetch(woeid):
             dict_top3 = {}
             dict_top3.update({"name": trend['Hashtag'].replace(" ", "__")})
             try:
-            		#print db_coll.find({"Hashtag":trend['Hashtag']})
+                    #print db_coll.find({"Hashtag":trend['Hashtag']})
                 #tag = list(db_coll.find({"Hashtag":trend['Hashtag']}))[0]
                 #print len(tag)
                 #vol_dict = tag["Vol_Dict"]
@@ -285,13 +286,13 @@ def fetch_top_risers():
     return a
 
 
-		
+        
 def hashtag(request,hasht):
-	context_dict={}
-	return render(request, 'app/hashtag.html', context_dict)
-	
+    context_dict={}
+    return render(request, 'app/hashtag.html', context_dict)
+    
 def autocompleteModel(request):
     if 'term' in request.GET:
         tags = Woeid.objects.filter(name__icontains=request.GET['term']).values_list('name',flat=True)[:5]
         return HttpResponse( json.dumps( [ tag for tag in tags ] ) )
-    return HttpResponse()	
+    return HttpResponse()   
