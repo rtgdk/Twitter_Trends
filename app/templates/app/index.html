@@ -220,9 +220,8 @@ function makechart(lab,time,data) {
 		        //$(tid).text(response);
 		        $("#modalbody").append('<hr><h2 style="color:#0084b4;text-align: center"><bold><u> Top Tweets </u></bold></h2><hr>')
 		        for( var i = 0; i < response.tweets.length; i++) {
-								$("#modalbody").append("<h5 style='padding: 0 10%;text-align: left;'><bold >"+response.tweets[i]+"</bold></h5><hr>");
+								$("#modalbody").append("<h5 style='padding: 0 10%;text-align: left;'><bold >"+response.tweets[i]+"</bold></h5><iframe src=" + response.media[i] + "><p>Your browser does not support iframes.</p></iframe><hr>");
 								//$("#modalbody").append('<div class="w3-card-4 w3-blue" style="padding: 0 10%;width:100%;"><div class="w3-container"><p>'+response.tweets[i]+'</p></div></div><hr>')
-								
 							}
 						$("#modalbody").append("<a class ='text-center' href='/app/hashtag/"+tid+"/'> View More</a>")
 						//$("#modalbody").append('</div>')
