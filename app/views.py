@@ -34,7 +34,11 @@ def index(request):
     context_dict = {}
     count = 0
     print "here"
-    db_coll_rate = db_trends.Trends_Rate
+    try :
+        db_coll_rate = db_trends.Trends_Rate
+    except:
+        context_dict['error'] ="Server down"
+        return render(request, 'app/index.html', context_dict)
     d=list(db_coll_rate.find({}).sort("Rate_Increase", -1))
     print "rate done"
     (newt2,topr2) = fetch_all("India",d)
