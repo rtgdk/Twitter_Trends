@@ -71,8 +71,8 @@ def fetch_all(woeid,d):
     b=[]
     db_coll_trends = db_trends.Trends_Place
     db_coll_rate = db_trends.Trends_Rate
-    #tdate = str(datetime.date.today())+"T00:00:00Z"
-    tdate ='2017-06-18T00:00:00Z'
+    tdate = str(datetime.date.today())+"T00:00:00Z"
+    #tdate ='2017-06-18T00:00:00Z'
     dict_trends = list(db_coll_trends.find({"Name": woeid,"Timestamp": {"$gt": tdate}}).sort('_id', -1))
     ul=[]
     count = 0
