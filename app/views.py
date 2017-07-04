@@ -45,10 +45,10 @@ def index(request):
     print "India done"
     # print "newt2"
     # print newt2
-    print "\nnewt2\n"
-    print newt2
-    print "\ntopr2\n"
-    print topr2
+    #print "\nnewt2\n"
+    #print newt2
+    #print "\ntopr2\n"
+    #print topr2
     (newt1, topr1) = fetch_all("Worldwide",d)
     print "Worldwide done"
     context_dict["newt2"] = newt2 #top_trends_fetch("India")   #newt2
