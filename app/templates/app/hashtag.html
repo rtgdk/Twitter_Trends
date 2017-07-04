@@ -4,11 +4,13 @@
 {% block body1 %}
 
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-      
-<div id="container" class="container" style="padding-left: 25%;">
-	<h4 >{{ hashtag }}</h4>
+<div id="container1" class="container" style="padding-left: 25%;">
+   	<h4 >{{ hashtag }}</h4>
 	<input type="hidden" id="currt" value=10>
 	<input type="hidden" id="hasht" value={{ hashtag }}>
+</div>
+
+<div id="container" class="container" style="padding-left: 25%;">	
 	{% for i in tweets %}
 	<div class="w3-card-4 text-center" style="width:70%;">
 	    <header class="w3-container w3-blue" style="height:20px;">
@@ -36,6 +38,7 @@
 	<hr>
 	{% endfor %}
 </div>
+
 <div id="container2" class="container" style="padding-left: 25%;">
 <a href="#" class="ajax btn btn-success">View More</a>
 </div>
@@ -57,6 +60,7 @@ $(document).ready(function(){
 	      	console.log(response);
 	      	console.log(response.tweets);
 	        //$(tid).text(response);
+	        $("#container").empty();
 	        for( var i = 0; i < response.tweets.length; i++) {
 	        			if (response.tweets[i].image){
 	        				$("#container").append('<div class="w3-card-4 text-center" style="width:70%;"><header class="w3-container w3-blue" style="height:20px;">'+response.tweets[i].username +'</header><div class="w3-container"><p>' + response.tweets[i].text+'</p><p><iframe id="img" src="' + response.tweets[i].image +'"class = "img" width="250"><p>Your browser does not support iframes.</p></iframe></p></div><footer class="w3-container w3-blue" style="height:20px;"><a href=' + response.tweets[i].link +'>View on Twitter</a></footer></div><hr>');
