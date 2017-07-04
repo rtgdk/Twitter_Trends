@@ -244,26 +244,18 @@ def tweet_fetch(request,woeid, hashtag, count):
         timestamp = i['Timestamp']
         c.append(timestamp[11:16])
         d.append(i['Tweet_Volume'])
-    print ("Hey ")
-    #print c
-    #print d
-    print("Search 2")
-    print (search2)
-    
-    print("Search 1")
-    print (search1)
     for i in search2['statuses']:
-        d ={}
-        d["text"] = i["text"]
+        e ={}
+        e["text"] = i["text"]
         try:
-            d["image"] = i["entities"]["media"][0]['media_url']
+            e["image"] = i["entities"]["media"][0]['media_url']
         except:
             pass
         try:
-            d["video"] = i['extended_entities']['media'][0]['video_info']['variants'][0]['url']
+            e["video"] = i['extended_entities']['media'][0]['video_info']['variants'][0]['url']
         except:
             pass
-        a.append(d)
+        a.append(e)
     response = {}
     print (response)
     response["tweets"] = a
@@ -369,7 +361,7 @@ def moretweets(request,hashtag,currt):
     search1 = api1.search(q=hashtag, result_type='mixed', count=count, include_entities='true')
     search2 = auth2.search(q=hashtag, result_type='mixed', count=count, include_entities='true')
     a = []
-    for i in search2['statuses'][int(currt):]:
+    for i in search2['statuses']:
         d ={}
         d["text"] = i["text"]
         d["username"] = i["user"]["screen_name"]
