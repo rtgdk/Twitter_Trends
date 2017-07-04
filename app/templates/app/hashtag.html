@@ -2,11 +2,77 @@
 {% load static %}
 {% load staticfiles %}
 {% block body1 %}
-<div class="container" >
-      <!-- Example row of columns -->
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
       
-  <div class="row">
-  <h2>Page in progress.</h2>
-  </div>
+<div id="container" class="container" style="padding-left: 25%;">
+	<h4 >{{ hashtag }}</h4>
+	<input type="hidden" id="currt" value=10>
+	<input type="hidden" id="hasht" value={{ hashtag }}>
+	{% for i in tweets %}
+	<div class="w3-card-4 text-center" style="width:70%;">
+	    <header class="w3-container w3-blue" style="height:20px;">
+	      {{ i.username }}
+	    </header>
+
+	    <div class="w3-container">
+	      <p>{{ i.text }}</p>
+	      {% if i.image %}
+	      <p><iframe id="img" src= {{ i.image }}  class = "img" width="250">
+			  <p>Your browser does not support iframes.</p>
+		  </iframe></p>
+	      {% endif %}
+	      {% if i.video %}
+	      <p><iframe id="vid" src= {{ i.video }}  class = "vid" width="250">
+			  <p>Your browser does not support iframes.</p>
+		  </iframe></p>
+		  {% endif %}
+	    </div>
+
+	    <footer class="w3-container w3-blue" style="height:20px;">
+	      <a href={{ i.link }}>View on Twitter</a>
+	    </footer>
+	</div>
+	<hr>
+	{% endfor %}
 </div>
+<div id="container2" class="container" style="padding-left: 25%;">
+<a href="#" class="ajax btn btn-success">View More</a>
+</div>
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+<script>
+$(document).ready(function(){
+    $('.ajax').click(function(event){
+    	event.preventDefault();
+       var hasht = $("#hasht").val();
+       var currt = $("#currt").val();
+       console.log(hasht);
+       console.log(currt);
+       var target = '/app/moretweets/' + hasht +'/'+ currt;
+       console.log(target);
+			$.ajax({
+	      url: target,
+	      dataType: 'json',
+	      success: function (response) {
+	      	console.log(response);
+	      	console.log(response.tweets);
+	        //$(tid).text(response);
+	        for( var i = 0; i < response.tweets.length; i++) {
+	        			if (response.tweets[i].image){
+	        				$("#container").append('<div class="w3-card-4 text-center" style="width:70%;"><header class="w3-container w3-blue" style="height:20px;">'+response.tweets[i].username +'</header><div class="w3-container"><p>' + response.tweets[i].text+'</p><p><iframe id="img" src="' + response.tweets[i].image +'"class = "img" width="250"><p>Your browser does not support iframes.</p></iframe></p></div><footer class="w3-container w3-blue" style="height:20px;"><a href=' + response.tweets[i].link +'>View on Twitter</a></footer></div><hr>');
+	        			}
+	        			else if (response.tweets[i].video){
+	        				$("#container").append('<div class="w3-card-4 text-center" style="width:70%;"><header class="w3-container w3-blue" style="height:20px;">'+response.tweets[i].username +'</header><div class="w3-container"><p>' + response.tweets[i].text+'</p><p><iframe id="vid" src="' + response.tweets[i].video +'"class = "vid" width="250"><p>Your browser does not support iframes.</p></iframe></p></div><footer class="w3-container w3-blue" style="height:20px;"><a href=' + response.tweets[i].link +'>View on Twitter</a></footer></div><hr>');
+
+	        			}
+	        			else {
+	        				$("#container").append('<div class="w3-card-4 text-center" style="width:70%;"><header class="w3-container w3-blue" style="height:20px;">'+response.tweets[i].username +'</header><div class="w3-container"><p>' + response.tweets[i].text+'</p></div><footer class="w3-container w3-blue" style="height:20px;"><a href=' + response.tweets[i].link +'>View on Twitter</a></footer></div><hr>');
+	        			}	
+			}
+			$("#currt").val(parseInt(currt)+10);
+	      }
+	    });
+      });
+});
+ </script>
 {% endblock %}  

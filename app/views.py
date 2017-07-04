@@ -75,8 +75,8 @@ def fetch_all(woeid,d):
     b=[]
     db_coll_trends = db_trends.Trends_Place
     db_coll_rate = db_trends.Trends_Rate
-    #tdate = str(datetime.date.today())+"T00:00:00Z"
-    tdate ='2017-06-29T00:00:00Z'
+    tdate = str(datetime.date.today())+"T00:00:00Z"
+    #tdate ='2017-06-18T00:00:00Z'
     dict_trends = list(db_coll_trends.find({"Name": woeid,"Timestamp": {"$gt": tdate}}).sort('_id', -1))
     ul=[]
     count = 0
@@ -247,18 +247,26 @@ def tweet_fetch(request,woeid, hashtag, count):
     print ("Hey ")
     #print c
     #print d
-    e = []
+    print("Search 2")
+    print (search2)
+    
+    print("Search 1")
+    print (search1)
     for i in search2['statuses']:
-        #print i['text']
-        try :
-            e.append(i["extended_entities"]["media"][0]["media_url"])
+        d ={}
+        d["text"] = i["text"]
+        try:
+            d["image"] = i["entities"]["media"][0]['media_url']
         except:
-            e.append("")
-        a.append(i["text"])
-    # print ''
+            pass
+        try:
+            d["video"] = i['extended_entities']['media'][0]['video_info']['variants'][0]['url']
+        except:
+            pass
+        a.append(d)
     response = {}
+    print (response)
     response["tweets"] = a
-    response["media"] = e
     response["timestamp"] = c[:20]
     response["tweetvol"] = d[:20]
     b = json.dumps(response)
@@ -294,15 +302,91 @@ def fetch_top_risers():
         dict_top3.update({"ri": round(tag["Rate_Inc"], 2)})
         a.append(dict_top3)
     print "DOne"
+
     #print dict_top
     return a
-
 
         
 def hashtag(request,hasht):
     context_dict={}
+    hashtag = hasht
+    context_dict["hashtag"] = hashtag
+    count = 10
+    woeid = "Worldwide"
+    db_coll_trends = db_trends.Trends_Place
+    hash_dict = db_coll_trends.find({"Hashtag": hashtag})
+    if hash_dict.count() == 0:
+        hashtag = "#" + hashtag
+    #print hashtag +"------------------------------"
+    consumer_key6 = '495MzSHQ36Ds9NttT8glVvK79'
+    consumer_secret6 = 'cRjX3CITBOtsEqKn2jgj3DBLK8MBgANfdFvNex57PeMlHUMZCY'
+    access_token6 = '870132122421403652-Ahmy6auwb8Qzrh8PvXP5E6ZLvEJZQcQ'
+    access_token_secret6 = 'fMbbcTik6QamDmqxV3zxwQwCz0CHvclFtYiGZdCEFuqo4'
+    auth1 = tweepy.OAuthHandler(consumer_key6, consumer_secret6)
+    auth1.set_access_token(access_token6, access_token_secret6)
+    api1 = tweepy.API(auth1)
+    auth2 = Twython(consumer_key6, consumer_secret6, access_token6, access_token_secret6)
+    search1 = api1.search(q=hashtag, result_type='mixed', count=count, include_entities='true')
+    search2 = auth2.search(q=hashtag, result_type='mixed', count=count, include_entities='true')
+    a = []
+    for i in search2['statuses']:
+        d ={}
+        d["text"] = i["text"]
+        d["username"] = i["user"]["screen_name"]
+        d["link"] = "https://twitter.com/i/web/status/"+str(i["id_str"])
+        try:
+            d["image"] = i["entities"]["media"][0]['media_url']
+        except:
+            try:
+                d["video"] = i['extended_entities']['media'][0]['video_info']['variants'][0]['url']
+            except:
+                pass
+        a.append(d)
+    #response = {}
+    #print (response)
+    context_dict["tweets"] = a
+    # b = json.dumps(a, indent=4)
+    #print b
+    #return HttpResponse(b)
     return render(request, 'app/hashtag.html', context_dict)
-    
+
+
+def moretweets(request,hashtag,currt):
+    hashtag = hashtag.replace("__"," ")
+    count = int(currt)+10
+    db_coll_trends = db_trends.Trends_Place
+    hash_dict = db_coll_trends.find({"Hashtag": hashtag})
+    if hash_dict.count() == 0:
+        hashtag = "#" + hashtag
+    consumer_key6 = '495MzSHQ36Ds9NttT8glVvK79'
+    consumer_secret6 = 'cRjX3CITBOtsEqKn2jgj3DBLK8MBgANfdFvNex57PeMlHUMZCY'
+    access_token6 = '870132122421403652-Ahmy6auwb8Qzrh8PvXP5E6ZLvEJZQcQ'
+    access_token_secret6 = 'fMbbcTik6QamDmqxV3zxwQwCz0CHvclFtYiGZdCEFuqo4'
+    auth1 = tweepy.OAuthHandler(consumer_key6, consumer_secret6)
+    auth1.set_access_token(access_token6, access_token_secret6)
+    api1 = tweepy.API(auth1)
+    auth2 = Twython(consumer_key6, consumer_secret6, access_token6, access_token_secret6)
+    search1 = api1.search(q=hashtag, result_type='mixed', count=count, include_entities='true')
+    search2 = auth2.search(q=hashtag, result_type='mixed', count=count, include_entities='true')
+    a = []
+    for i in search2['statuses'][int(currt):]:
+        d ={}
+        d["text"] = i["text"]
+        d["username"] = i["user"]["screen_name"]
+        d["link"] = "https://twitter.com/i/web/status/"+str(i["id_str"])
+        try:
+            d["image"] = i["entities"]["media"][0]['media_url']
+        except:
+            pass
+        try:
+            d["video"] = i['extended_entities']['media'][0]['video_info']['variants'][0]['url']
+        except:
+            pass
+        a.append(d)
+    response = {}
+    response["tweets"] = a
+    b = json.dumps(response)
+    return HttpResponse(b)
 def autocompleteModel(request):
     if 'term' in request.GET:
         tags = Woeid.objects.filter(name__icontains=request.GET['term']).values_list('name',flat=True)[:5]

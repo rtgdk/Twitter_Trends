@@ -220,8 +220,15 @@ function makechart(lab,time,data) {
 		        //$(tid).text(response);
 		        $("#modalbody").append('<hr><h2 style="color:#0084b4;text-align: center"><bold><u> Top Tweets </u></bold></h2><hr>')
 		        for( var i = 0; i < response.tweets.length; i++) {
-								$("#modalbody").append("<h5 style='padding: 0 10%;text-align: left;'><bold >"+response.tweets[i]+"</bold></h5><iframe src=" + response.media[i] + "><p>Your browser does not support iframes.</p></iframe><hr>");
-								//$("#modalbody").append('<div class="w3-card-4 w3-blue" style="padding: 0 10%;width:100%;"><div class="w3-container"><p>'+response.tweets[i]+'</p></div></div><hr>')
+		        				if (response.tweets[i].image){
+									$("#modalbody").append("<h5 style='padding: 0 10%;text-align: left;'><bold >"+response.tweets[i].text+"</bold></h5><p><iframe id='img' src='" + response.tweets[i].image +"'class = 'img' width='250'><p>Your browser does not support iframes.</p></iframe></p><hr>");
+								}
+								else if (response.tweets[i].video){
+									$("#modalbody").append("<h5 style='padding: 0 10%;text-align: left;'><bold >"+response.tweets[i].text+"</bold></h5><p><iframe id='vid' src='" + response.tweets[i].video +"'class = 'vid' width='250'><p>Your browser does not support iframes.</p></iframe></p><hr>");
+								}
+								else{
+									$("#modalbody").append("<h5 style='padding: 0 10%;text-align: left;'><bold >"+response.tweets[i].text+"</bold></h5><hr>");
+								}	
 							}
 						$("#modalbody").append("<a class ='text-center' href='/app/hashtag/"+tid+"/'> View More</a>")
 						//$("#modalbody").append('</div>')
@@ -241,7 +248,7 @@ function makechart(lab,time,data) {
 								type:"line",
 								data:{"labels": array1,   //["January","February","March","April","May","June","July"],
 									datasets:[{
-										label: "1",  //str //"My First Dataset",
+										//label: "1",  //str //"My First Dataset",
 										data: array2,   //[65,59,80,81,56,55,40],
 										fill:true,
 										borderColor:"rgb(75, 192, 192)",
