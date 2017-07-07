@@ -19,7 +19,8 @@ from .models import Woeid
 
 #dbclient = MongoClient('mongodb://admin:admin@54.80.161.204:27017')
 #dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
-dbclient = MongoClient('mongodb://admin:admin@54.172.130.187:27017')
+#dbclient = MongoClient('mongodb://admin:admin@54.172.130.187:27017')
+dbclient = MongoClient('mongodb://admin:admin@api3.gistai.com:27017')
 
 db_trends = dbclient['Twitter_Trends']
 #db_coll = db_trends.Trends_Place
@@ -43,12 +44,6 @@ def index(request):
     print "rate done"
     (newt2,topr2) = fetch_all("India",d)
     print "India done"
-    # print "newt2"
-    # print newt2
-    #print "\nnewt2\n"
-    #print newt2
-    #print "\ntopr2\n"
-    #print topr2
     (newt1, topr1) = fetch_all("Worldwide",d)
     print "Worldwide done"
     context_dict["newt2"] = newt2 #top_trends_fetch("India")   #newt2
@@ -305,10 +300,10 @@ def hashtag(request,hasht):
     context_dict["hashtag"] = hashtag
     count = 10
     woeid = "Worldwide"
-    db_coll_trends = db_trends.Trends_Place
-    hash_dict = db_coll_trends.find({"Hashtag": hashtag})
-    if hash_dict.count() == 0:
-        hashtag = "#" + hashtag
+    #db_coll_trends = db_trends.Trends_Place
+    #hash_dict = db_coll_trends.find({"Hashtag": hashtag})
+    #if hash_dict.count() == 0:
+    #    hashtag = "#" + hashtag
     #print hashtag +"------------------------------"
     consumer_key6 = '495MzSHQ36Ds9NttT8glVvK79'
     consumer_secret6 = 'cRjX3CITBOtsEqKn2jgj3DBLK8MBgANfdFvNex57PeMlHUMZCY'
@@ -321,21 +316,28 @@ def hashtag(request,hasht):
     search1 = api1.search(q=hashtag, result_type='mixed', count=count, include_entities='true')
     search2 = auth2.search(q=hashtag, result_type='mixed', count=count, include_entities='true')
     a = []
+    count = 1
     for i in search2['statuses']:
         d ={}
         d["text"] = i["text"]
+        d["cid"] = str(count)
+        count = count+1
         d["username"] = i["user"]["screen_name"]
         d["link"] = "https://twitter.com/i/web/status/"+str(i["id_str"])
         try:
             d["image"] = i["entities"]["media"][0]['media_url']
+            d["cbox"] = d["text"] + "&&&" + d["image"]
         except:
             try:
                 d["video"] = i['extended_entities']['media'][0]['video_info']['variants'][0]['url']
+                d["cbox"] = d["text"] + "|||" + d["video"]
             except:
+                d["cbox"] = d["text"]
                 pass
         a.append(d)
     #response = {}
     #print (response)
+    print json.dumps(search2['statuses'],indent=4)
     context_dict["tweets"] = a
     # b = json.dumps(a, indent=4)
     #print b
@@ -346,10 +348,10 @@ def hashtag(request,hasht):
 def moretweets(request,hashtag,currt):
     hashtag = hashtag.replace("__"," ")
     count = int(currt)+10
-    db_coll_trends = db_trends.Trends_Place
-    hash_dict = db_coll_trends.find({"Hashtag": hashtag})
-    if hash_dict.count() == 0:
-        hashtag = "#" + hashtag
+    #db_coll_trends = db_trends.Trends_Place
+    #hash_dict = db_coll_trends.find({"Hashtag": hashtag})
+    #if hash_dict.count() == 0:
+    #    hashtag = "#" + hashtag
     consumer_key6 = '495MzSHQ36Ds9NttT8glVvK79'
     consumer_secret6 = 'cRjX3CITBOtsEqKn2jgj3DBLK8MBgANfdFvNex57PeMlHUMZCY'
     access_token6 = '870132122421403652-Ahmy6auwb8Qzrh8PvXP5E6ZLvEJZQcQ'
@@ -379,6 +381,8 @@ def moretweets(request,hashtag,currt):
     response["tweets"] = a
     b = json.dumps(response)
     return HttpResponse(b)
+
+
 def autocompleteModel(request):
     if 'term' in request.GET:
         tags = Woeid.objects.filter(name__icontains=request.GET['term']).values_list('name',flat=True)[:5]
