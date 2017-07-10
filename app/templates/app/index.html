@@ -221,10 +221,10 @@ function makechart(lab,time,data) {
 		        $("#modalbody").append('<hr><h2 style="color:#0084b4;text-align: center"><bold><u> Top Tweets </u></bold></h2><hr>')
 		        for( var i = 0; i < response.tweets.length; i++) {
 		        				if (response.tweets[i].image){
-									$("#modalbody").append("<h5 style='padding: 0 10%;text-align: left;'><bold >"+response.tweets[i].text+"</bold></h5><p><iframe id='img' src='" + response.tweets[i].image +"'class = 'img' width='250'><p>Your browser does not support iframes.</p></iframe></p><hr>");
+									$("#modalbody").append("<h5 style='padding: 0 10%;text-align: left;'><bold >"+response.tweets[i].text+"</bold></h5><p><img id='img' src='" + response.tweets[i].image +"'class = 'img' width='250'></p><hr>");
 								}
 								else if (response.tweets[i].video){
-									$("#modalbody").append("<h5 style='padding: 0 10%;text-align: left;'><bold >"+response.tweets[i].text+"</bold></h5><p><iframe id='vid' src='" + response.tweets[i].video +"'class = 'vid' width='250'><p>Your browser does not support iframes.</p></iframe></p><hr>");
+									$("#modalbody").append("<h5 style='padding: 0 10%;text-align: left;'><bold >"+response.tweets[i].text+"</bold></h5><p><video width='320' height='240' controls><source src=" + response.tweets[i].video +"type='video/mp4'></video></p><hr>");
 								}
 								else{
 									$("#modalbody").append("<h5 style='padding: 0 10%;text-align: left;'><bold >"+response.tweets[i].text+"</bold></h5><hr>");

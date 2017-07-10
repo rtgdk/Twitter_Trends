@@ -199,7 +199,7 @@
 	<input type="hidden" id="currt" value=10>
 	<input type="hidden" id="hasht" value={{ hashtag }}>
 </div>
-<form >
+<form name="myForm" id ="myForm">
 <div id="container" class="container" style="padding-left: 25%;">	
 	{% for i in tweets %}
 	<div class="w3-card-4 text-center" style="width:70%;">
@@ -207,8 +207,9 @@
 	      {{ i.username }}
 	    </header>
 	    <div class="checkbox text-left">
-		  <label><input type="checkbox" value={{ i.cbox }} id={{ i.cid }} onclick="selectOnlyThis(this.id)"></label>
+		  <label><input type="checkbox" value= " {{ i.cbox }} " id= "{{ i.cid }}" onclick="selectOnlyThis(this.id)"></label>
 		</div>
+		<input type="hidden" value= "" id="allselected" name="allselected">
 	    <div class="w3-container ">
 		    <div class="col-sm-6">
 		      <p>{{ i.text }}</p>
@@ -308,8 +309,16 @@ $(document).ready(function(){
  </script>
  <script type="text/javascript">
 function selectOnlyThis(id) {
-	console.log(id)
-    document.getElementById(id).checked = false;
+	console.log(id) ;
+	if (document.getElementById(id).checked == true){
+			document.getElementById("allselected").value = document.getElementById("allselected").value + id +"," ;
+	}
+	else{
+			document.getElementById("allselected").value = document.getElementById("allselected").value + "-" +id +",";
+	}		
+	var allselected = document.getElementById("allselected").value ;
+	console.log(allselected) ;
+    //document.getElementById(id).checked = true;
 }
  </script>
 {% endblock %}  
