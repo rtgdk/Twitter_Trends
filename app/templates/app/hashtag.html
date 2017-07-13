@@ -32,7 +32,9 @@
   animation: plus-out 0.3s;
   transition: all 0.3s;
 }
-
+.hidden{
+	display: none;
+}
 #container-floating{
   position: fixed;
   width: 70px;
@@ -196,20 +198,21 @@
 <link href="{% static 'css/w3.css' %}" rel="stylesheet" type="text/css">
 <div id="container1" class="container" style="padding-left: 25%;">
    	<h4 >{{ hashtag }}</h4>
-	<input type="hidden" id="currt" value=10>
-	<input type="hidden" id="hasht" value={{ hashtag }}>
 </div>
-<form name="myForm" id ="myForm">
-<div id="container" class="container" style="padding-left: 25%;">	
+<form name="myForm" id ="myForm" role="form" method="post" action="/app/importtogist/">
+{% csrf_token %}
+<div id="container" class="container" style="padding-left: 25%;">
+<input type="hidden" name="currt" id="currt" value=10>
+<input type="hidden" id="hashtag" name="hashtag" value={{ hashtag }}>
+<input type="hidden" value= "" id="allselected" name="allselected">
 	{% for i in tweets %}
 	<div class="w3-card-4 text-center" style="width:70%;">
 	    <header class="w3-container w3-blue" style="height:20px;">
 	      {{ i.username }}
 	    </header>
 	    <div class="checkbox text-left">
-		  <label><input type="checkbox" value= " {{ i.cbox }} " id= "{{ i.cid }}" onclick="selectOnlyThis(this.id)"></label>
+		  <label><input type="checkbox" value= " {{ i.cbox }} " id= "{{ i.cid }}" name= "{{ i.cid }}" onclick="selectOnlyThis(this.id)"></label>
 		</div>
-		<input type="hidden" value= "" id="allselected" name="allselected">
 	    <div class="w3-container ">
 		    <div class="col-sm-6">
 		      <p>{{ i.text }}</p>
@@ -241,6 +244,7 @@
 	<hr>
 	{% endfor %}
 </div>
+<input type="submit" id="submit-form" class ="hidden">
 </form>
 <div id="container2" class="container" style="padding-left: 25%;">
 	<a href="#" class="ajax btn btn-success">View More</a>
@@ -251,7 +255,7 @@
 	  	<p class="letter">RT</p>
 	  </div>
 	  <div class="nd1 nds" id="alltweets" data-toggle="tooltip" data-placement="left" data-original-title="Edoardo@live.it"><img class="reminder">
-	    <p class="letter">A</p>
+	    <p class="letter"><label for="submit-form" tabindex="0">A</label></p>
 	  </div>
 	  <div id="floating-button" data-toggle="tooltip" data-placement="left" data-original-title="Create">
 	    <p class="plus">g</p>
@@ -264,7 +268,7 @@
 $(document).ready(function(){
     $('.ajax').click(function(event){
     	event.preventDefault();
-       var hasht = $("#hasht").val();
+       var hasht = $("#hashtag").val();
        var currt = $("#currt").val();
        console.log(hasht);
        console.log(currt);
@@ -294,17 +298,18 @@ $(document).ready(function(){
 	      }
 	    });
       });
-    $('#alltweets').click(function(event){
-    	event.preventDefault();
-       //var target = '/app/importogist/' + hasht +'/'+ currt;
-       console.log(target);
-			$.ajax({
-			      url: target,
-			      dataType: 'json',
-			      success: function (response) {
-	      }
-	    });
-	});
+
+ //    $('#alltweets').click(function(event){
+ //    	event.preventDefault();
+ //       //var target = '/app/importogist/' + hasht +'/'+ currt;
+ //       console.log(target);
+	// 		$.ajax({
+	// 		      url: target,
+	// 		      dataType: 'json',
+	// 		      success: function (response) {
+	//       }
+	//     });
+	// });
 });
  </script>
  <script type="text/javascript">

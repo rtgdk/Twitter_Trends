@@ -6,5 +6,6 @@ urlpatterns = [
 	url(r'^search/$', views.autocompleteModel , name = 'search'),
 	url(r'^hashtag/(?P<hasht>[-\w]+)/$', views.hashtag , name = 'hashtag'),
 	url(r'^moretweets/(?P<hashtag>[-\w]+)/(?P<currt>[-\w]+)$', views.moretweets , name = 'moretweets'),
+	url(r'^importtogist/$', views.importtogist , name = 'importtogist'),
 	#url(r'^other/$', views.other, name="other"),
 ]

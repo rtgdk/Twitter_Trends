@@ -15,6 +15,7 @@ import json
 import random
 from tqdm import tqdm
 from .models import Woeid
+import time
 # Create your views here.
 
 #dbclient = MongoClient('mongodb://admin:admin@54.80.161.204:27017')
@@ -339,7 +340,7 @@ def hashtag(request,hasht):
         a.append(d)
     #response = {}
     #print (response)
-    print json.dumps(search2['statuses'],indent=4)
+    #print json.dumps(search2['statuses'],indent=4)
     context_dict["tweets"] = a
     # b = json.dumps(a, indent=4)
     #print b
@@ -388,7 +389,60 @@ def moretweets(request,hashtag,currt):
 def importtogist(request):
     if request.method == 'POST':
         hashtag = request.POST["hashtag"]
-        return HttpResponse()
+        allselected = request.POST["allselected"]
+        allselected = allselected.split(",")[:-1]
+        print allselected
+        a=list()
+        tweets = list()
+        gist = list()
+        images = list()
+        for i in allselected:
+            print (i)
+            if (int(i)>0):
+                a.append(int(i))
+            else :
+                a.remove(abs(int(i)))
+        for i in a:
+            checkbox = request.POST[str(i)]
+            checkbox = checkbox.split("&&&")
+            tw = dict()
+            if (len(checkbox)==1):
+                tw["tweet"] = checkbox[0]
+                gist.append(checkbox[0])
+            elif (len(checkbox)==2):
+                tw["tweet"] = checkbox[0]
+                gist.append(checkbox[0])
+                tw["image"] = checkbox[1]
+                images.append(checkbox[1])
+            tweets.append(tw)
+
+        importdict = {"id":"","title":hashtag,"date":int(time.time()),
+        "url":"",
+        "urlMD5":"","authorname":"Twitter","language":"English","type":"Auto",
+        "text":"",
+        "addedtime":int(time.time()),"status":"1",
+        "gist":gist, "AudioTraining":["Pune","BS","Ltd","Vas","Bajaj","Eric","quadricycle"],
+        "VideoTitleObject":"","finalImages":images,"StoryBY":"",
+        "CreatedBY":"",
+        "VisualData":[{"dtext":gist[0], "source":"","clipTitle":"Now,BajajAutobikes,three-wheelersBS-IVcom...","TextTags":"Bajaj,BS",
+            "atext":gist[0], "dvoice":"Ivona,F,Raveena","vsrc":"https://gistserver.s3.amazonaws.com/images/crAHl_Bg0j.jpg<__><__>",
+            "vtype":"image<__><__>","vmute":"false<__><__>",
+            "vstart":"00:00:00<__><__>","vend":"00:00:00<__><__>","vcrop":"<__><__>","vsource":"<__><__>","clip_transition":"Off","customAudio":"no",
+            "Audiourl":"no","cliptxtOrientation":"BottomLeft","clipType":"FullImage","clipListNo":"1","clip_title":"Off","visualEffect":"zoom<__>zoom<__>zoom",
+            "clipid":"1494497700_0"}],
+        "gistAudio":[gist[0]],
+        "AudioVoice":"Ivona,F,Raveena","bg-music":"TrailofTears<_>743e03fa6d89b97e952036c2afd645e6<_>http://api3.gistai.com/Musics/oneindia/9.mp3",
+        "templateName":"ITQuickieVertical-Red","templateId":"9ebbc652ae58e65c0e1d940c97d08042",
+        "backgroundMusicData":{"name":"TrailofTears", "id":"743e03fa6d89b97e952036c2afd645e6","url":""},
+        "video_transtion":"Off<_>Off<_>Off",
+        "videoTranstions":{"name":"Off","type":"Off","path":"Off"},
+        "MuteAllAudio":"false","videoClips":"","video_format":"SD",
+        "videoAdded":int(time.time()),"imagecount":str(len(images)),"AddBy":""
+
+        }
+        return HttpResponse(json.dumps(importdict,indent=4))
+    else :
+        return HttpResponse(request)
 
 def autocompleteModel(request):
     if 'term' in request.GET:
