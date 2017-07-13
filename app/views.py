@@ -110,7 +110,7 @@ def fetch_all(woeid,d):
         try:
             dict_tr = {}
             ri = round(list(db_coll_rate.find({"Hashtag":i['Hashtag']}))[0]["Rate_Increase"],2) #list(filter(lambda person: person['Hashtag'] == i["Hashtag"], d))[0]["Rate_Increase"]
-            dict_tr.update({"name":i.replace(" ", "__")})
+            dict_tr.update({"name":i['Hashtag'].replace(" ", "__")})
             dict_tr.update({"ri":round(ri,2)})
             #find_hash = list(filter(lambda person: person['Hashtag'] == i["Hashtag"], dict_trends))
             score = len(db_coll_trends.find({"Hashtag":i['Hashtag']}).distinct("Woeid")) #({v['Woeid']: v for v in find_hash})
