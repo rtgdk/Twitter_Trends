@@ -3,7 +3,7 @@ import os
 
 
 def main():
-	dbclient = MongoClient('mongodb://admin:admin@54.172.143.59:27017')
+	dbclient = MongoClient('mongodb://') # username:password@Ip:Port
 	db_trends = dbclient['Twitter_Trends']
 	print "here"
 	woeid1 = db_trends.woeids1
